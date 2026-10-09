@@ -1,0 +1,22 @@
+Create ucdavis/Basic-Sciences-Quarterly (Q3 2026 first)
+
+1. Finish the workflow file (one Terminal command; Claude cannot write into hidden .github folders):
+   cd "/Users/ajoo/Desktop/Claude/Claude BS Newsletter/Basic-Sciences-Quarterly"
+   mkdir -p .github/workflows && mv deploy-pages.yml .github/workflows/ && chmod +x scripts/prepare-issue.sh
+
+2. GitHub Desktop: File > Add Local Repository > choose this folder.
+   When it says the folder is not a repository, click "create a repository", keep the name
+   Basic-Sciences-Quarterly, and create it. Make the first commit ("Initial site: Q3 2026").
+
+3. Click Publish repository. Set Organization to ucdavis, untick "Keep this code private"
+   (the Q2 site is public), and publish. If ucdavis is not offered, an org owner must create
+   an empty ucdavis/Basic-Sciences-Quarterly repo first or grant you repo-creation rights.
+
+4. On github.com: repo Settings > Pages > Build and deployment > Source: GitHub Actions.
+   Then Actions tab: confirm "Deploy Pages" succeeds (re-run it if it ran before step 4).
+
+5. Site: https://ucdavis.github.io/Basic-Sciences-Quarterly/
+   Q3:   https://ucdavis.github.io/Basic-Sciences-Quarterly/2026-q3/newsletter.html
+
+Leave ucdavis/Basic-Sciences-Quarterly-2026-Q2 in place so links already sent keep working.
+Q1 and Q2 will be copied in later as public/2026-q1/ and public/2026-q2/.

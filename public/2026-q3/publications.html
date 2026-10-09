@@ -1,0 +1,1824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Basic Sciences Faculty Publications, Q4 2025 to Q3 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #F0F4F8;
+    color: #1a1a2e;
+    min-height: 100vh;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #002855 0%, #1B5299 100%);
+    color: white;
+    padding: 48px 40px 36px;
+  }
+  .hero-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: #DAAA00;
+    margin-bottom: 12px;
+  }
+  .hero h1 {
+    font-family: 'Source Serif 4', serif;
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+  .hero-sub {
+    font-size: 14px;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 20px;
+  }
+  .hero-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #DAAA00;
+    background: rgba(218,170,0,0.12);
+    border: 1px solid rgba(218,170,0,0.35);
+    border-radius: 20px;
+    padding: 5px 14px;
+    cursor: pointer;
+    text-decoration: none;
+    margin-bottom: 24px;
+    transition: background 0.2s;
+    width: fit-content;
+  }
+  .hero-back:hover { background: rgba(218,170,0,0.22); }
+  .hero-stats {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .stat-num {
+    font-size: 28px;
+    font-weight: 700;
+    color: #DAAA00;
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.65);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* ── NAV ── */
+  .nav {
+    background: white;
+    border-bottom: 3px solid #DAAA00;
+    padding: 0 40px;
+    display: flex;
+    gap: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  }
+  .nav a {
+    display: inline-block;
+    padding: 14px 18px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    color: #555;
+    text-transform: uppercase;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -3px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .nav a:hover { color: #002855; border-bottom-color: #002855; }
+  .nav-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 18px;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    color: white;
+    background: #002855;
+    border-radius: 0;
+    cursor: pointer;
+    border: none;
+    letter-spacing: 0.4px;
+    transition: background 0.2s;
+    margin-right: 8px;
+    border-right: 1px solid rgba(255,255,255,0.15);
+  }
+  .nav-back:hover { background: #1B5299; color: white; }
+
+  /* ── MAIN LAYOUT ── */
+  .main { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  /* ── PERIOD HEADER ── */
+  .period {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 48px 0 28px;
+  }
+  .period:first-of-type { margin-top: 0; }
+  .period-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .period-badge {
+    background: #002855;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 20px;
+    white-space: nowrap;
+    transition: background 0.2s;
+  }
+  .period-toggle:hover .period-badge { background: #1B5299; }
+  /* Q4 = white text · Q1 = gold text — same blue base, different font colors */
+  .period-badge.q4 { color: #ffffff; }
+  .period-badge.q1 { color: #DAAA00; }
+  .period-badge.q3 { color: #ffffff; }
+  .jb-generic { background: #E8EEF6; color: #1B3F5E; }
+  .addendum-note { font-size: 13px; color: #5a6a7a; margin: 8px 0 18px; padding-top: 14px; border-top: 1px dashed #c9d3df; }
+  .period-chevron {
+    font-size: 13px;
+    color: #888;
+    transition: transform 0.25s;
+    display: inline-block;
+  }
+  .period-toggle.collapsed .period-chevron { transform: rotate(-90deg); }
+  .period-line { flex: 1; height: 1px; background: #D0D8E4; }
+  .period-count {
+    font-size: 12px;
+    color: #888;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .period-body {
+    overflow: hidden;
+    transition: max-height 0.35s ease, opacity 0.25s ease;
+    max-height: 10000px;
+    opacity: 1;
+  }
+  .period-body.collapsed {
+    max-height: 0;
+    opacity: 0;
+  }
+
+  /* ── DEPARTMENT COLOR PALETTE ── */
+  /* Physiology  → crimson   — heartbeat, blood, vital functions        */
+  /* Pharmacology → indigo   — molecules, neural binding, drug design   */
+  /* Cell Biology → emerald  — cells, GFP microscopy, growth            */
+  /* Biochemistry → amber    — chemical energy, reactions               */
+  /* MMI          → teal     — agar plates, microbes, immune defense    */
+  /* PHS          → orange   — public health, population science        */
+
+  /* ── DEPARTMENT SECTION ── */
+  .dept-group { margin-bottom: 32px; }
+  .dept-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    padding: 5px 10px 5px 12px;
+    border-radius: 4px;
+    display: inline-block;
+  }
+
+  /* dept label colors */
+  .dept-group.dept-physio  .dept-label { color: #B71C1C; background: #FFEBEE; border-left: 3px solid #C62828; }
+  .dept-group.dept-pharma  .dept-label { color: #311B92; background: #EDE7F6; border-left: 3px solid #4527A0; }
+  .dept-group.dept-cellbio .dept-label { color: #004D40; background: #E0F2F1; border-left: 3px solid #00695C; }
+  .dept-group.dept-biochem .dept-label { color: #0D47A1; background: #E3F2FD; border-left: 3px solid #1565C0; }
+  .dept-group.dept-mmi     .dept-label { color: #BF360C; background: #FBE9E7; border-left: 3px solid #E65100; }
+  .dept-group.dept-phs     .dept-label { color: #7C2D12; background: #FFF7ED; border-left: 3px solid #FDBA74; }
+
+  /* ── PUBLICATION CARD ── */
+  .pub-card {
+    background: white;
+    border-radius: 12px;
+    padding: 22px 24px;
+    margin-bottom: 14px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    border-left: 5px solid transparent;
+    transition: transform 0.15s, box-shadow 0.15s;
+    position: relative;
+  }
+  .pub-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+  }
+
+  /* dept card borders */
+  .pub-card.dept-physio  { border-left-color: #C62828; }
+  .pub-card.dept-pharma  { border-left-color: #4527A0; }
+  .pub-card.dept-cellbio { border-left-color: #00695C; }
+  .pub-card.dept-biochem { border-left-color: #1565C0; }
+  .pub-card.dept-mmi     { border-left-color: #E65100; }
+  .pub-card.dept-phs     { border-left-color: #FDBA74; }
+
+  /* review/perspectives — no background tint, dept border only */
+  .pub-card.review { background: white; }
+
+  .card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .journal-badge {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .jb-nature  { background: #FFEBEE; color: #C62828; }
+  .jb-cell    { background: #F3E5F5; color: #6A1B9A; }
+  .jb-natcomm { background: #E3F2FD; color: #1565C0; }
+  .jb-molcell { background: #F3E5F5; color: #6A1B9A; }
+  .jb-neuron  { background: #FCE4EC; color: #880E4F; }
+  .jb-sciadv  { background: #E0F7FA; color: #006064; }
+  .jb-cardio  { background: #FBE9E7; color: #BF360C; }
+  .jb-jbc     { background: #F1F8E9; color: #33691E; }
+  .jb-mbio    { background: #E1F5FE; color: #01579B; }
+  .jb-jphys   { background: #EDE7F6; color: #4A148C; }
+  .jb-review  { background: #FFF8E1; color: #E65100; }
+  .jb-natmed  { background: #FFEBEE; color: #C62828; }
+  .jb-envint  { background: #E8F5E9; color: #2E7D32; }
+  .jb-envepid { background: #FFF3E0; color: #E65100; }
+  .jb-pnas   { background: #E8EAF6; color: #283593; }
+  .jb-diabet { background: #FFF3E0; color: #E65100; }
+  .jb-struct { background: #EFEBE9; color: #4E342E; }
+  .jb-circ   { background: #FBE9E7; color: #BF360C; }
+  .jb-jama   { background: #FFEBEE; color: #C62828; }
+  .jb-combio { background: #E3F2FD; color: #1565C0; }
+
+  .pub-date {
+    font-size: 11px;
+    color: #999;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  .pub-title {
+    font-family: 'Source Serif 4', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #002855;
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+
+  .pub-authors {
+    font-size: 12.5px;
+    color: #555;
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+  .pub-authors strong {
+    color: #002855;
+    font-weight: 600;
+  }
+
+  .pub-summary {
+    font-size: 13px;
+    color: #444;
+    line-height: 1.6;
+    padding: 10px 14px;
+    background: #F5F8FC;
+    border-radius: 6px;
+  }
+
+  .flag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #E65100;
+    background: #FFF3E0;
+    padding: 3px 10px;
+    border-radius: 12px;
+    margin-top: 10px;
+  }
+
+  /* ── CARD FOOTER ── */
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid #EEF2F7;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .card-doi {
+    font-size: 11px;
+    color: #AAB4C0;
+    font-family: 'Courier New', monospace;
+  }
+  .btn-paper {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.15s, transform 0.1s;
+    cursor: pointer;
+    border: none;
+  }
+  .btn-paper:hover { transform: translateY(-1px); }
+  .btn-doi {
+    background: #002855;
+    color: white;
+  }
+  .btn-doi:hover { background: #1B5299; }
+  .btn-pubmed {
+    background: #F0F4F8;
+    color: #555;
+    border: 1px solid #D0D8E4;
+  }
+  .btn-pubmed:hover { background: #E3EBF4; }
+
+  /* ── MISSING ── */
+  .missing-card {
+    background: #F8F9FA;
+    border: 2px dashed #CBD5E0;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 14px;
+    color: #888;
+    font-size: 13px;
+  }
+  .missing-card strong { color: #555; }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: #002855;
+    color: rgba(255,255,255,0.55);
+    text-align: center;
+    padding: 24px;
+    font-size: 12px;
+  }
+  .footer strong { color: rgba(255,255,255,0.85); }
+
+  /* ── LEGEND ── */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 32px;
+    padding: 16px 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  .legend-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #888;
+    width: 100%;
+    margin-bottom: 4px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    color: #555;
+  }
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">Office of the Vice Dean for Basic Sciences · UC Davis School of Medicine</div>
+  <div style="display:flex; gap:10px; margin-bottom:12px;">
+    <a class="hero-back" href="newsletter.html">&#8592; Back to Newsletter</a>
+    <a class="hero-back" href="faculty-metrics.html">Publication Metrics</a>
+  </div>
+  <h1>Basic Sciences Faculty Publications</h1>
+  <div class="hero-sub">October 2025 to September 2026 &middot; Q3 2026 edition</div>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-num">67</span><span class="stat-label">Papers identified</span></div>
+    <div class="stat"><span class="stat-num">6</span><span class="stat-label">Departments</span></div>
+    <div class="stat"><span class="stat-num">22</span><span class="stat-label">Q3 2026 papers</span></div>
+    <div class="stat"><span class="stat-num">4</span><span class="stat-label">Time windows</span></div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <button class="nav-back" onclick="window.location.href='newsletter.html'">&#8592; Newsletter</button>
+  <a href="#q4">2025 Q4</a>
+  <a href="#q1">2026 Q1</a>
+  <a href="#q2">2026 Q2</a>
+  <a href="#q3">2026 Q3</a>
+</nav>
+
+<div class="main">
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="legend-title">Department color key</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#C62828"></div> Physiology &amp; Membrane Biology</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#4527A0"></div> Pharmacology</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#00695C"></div> Cell Biology &amp; Human Anatomy</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#1565C0"></div> Biochemistry &amp; Molecular Medicine</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#E65100"></div> Medical Microbiology &amp; Immunology</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#FDBA74"></div> Public Health Sciences</div>
+    <div class="legend-item" style="margin-left:auto;"><div class="legend-dot" style="background:#F9A825;border-radius:2px;"></div> Review / Perspectives</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!-- Q4 2025 -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <div id="q4">
+    <div class="period">
+      <div class="period-toggle collapsed" onclick="togglePeriod(this,'q4-body')" title="Click to collapse/expand">
+        <div class="period-badge q4">Oct to Dec 2025 &nbsp;<span style="font-weight:400;opacity:0.75;">(2025 Q4)</span></div>
+        <span class="period-chevron">▾</span>
+      </div>
+      <div class="period-line"></div>
+      <div class="period-count">4 papers</div>
+    </div>
+
+    <div class="period-body collapsed" id="q4-body">
+      <!-- Biochemistry -->
+      <div class="dept-group dept-biochem">
+        <div class="dept-label">Biochemistry &amp; Molecular Medicine</div>
+
+        <div class="pub-card dept-biochem">
+          <div class="card-top">
+            <span class="journal-badge jb-molcell">Molecular Cell</span>
+            <span class="pub-date">Dec 2025</span>
+          </div>
+          <div class="pub-title">UMP functions as an endogenous regulator of NR4A1 to control gastric cancer progression</div>
+          <div class="pub-authors">Cai G, … <strong>Hong-Wu Chen</strong>, Su T, Wang J</div>
+          <div class="pub-summary">Identifies UMP as a metabolic checkpoint for the tumor-suppressive transcription factor NR4A1, pointing to a novel combination therapeutic strategy for gastric cancer.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1016/j.molcel.2025.10.030</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1016/j.molcel.2025.10.030" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/41270758/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card dept-biochem review">
+          <div class="card-top">
+            <span class="journal-badge jb-review">Neuron · Perspectives</span>
+            <span class="pub-date">Dec 2025</span>
+          </div>
+          <div class="pub-title">Scoping chromatin dynamics across cortical neurogenesis</div>
+          <div class="pub-authors">Haghani NK, <strong>Megan Y. Dennis</strong></div>
+          <div class="pub-summary">Reviews SCOPE-C, a technique for simultaneously profiling chromatin accessibility and 3D regulatory contacts during cortical brain development; highlighting its implications for understanding neurodevelopmental disorders.</div>
+          <div class="flag">⚠ Perspectives piece; not primary research</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1016/j.neuron.2025.10.034</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1016/j.neuron.2025.10.034" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/41344291/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pharmacology -->
+      <div class="dept-group dept-pharma">
+        <div class="dept-label">Pharmacology</div>
+
+        <div class="pub-card dept-pharma">
+          <div class="card-top">
+            <span class="journal-badge jb-cardio">Cardiovascular Research</span>
+            <span class="pub-date">Nov 2025</span>
+          </div>
+          <div class="pub-title">Activated CaMKIIδ translocates to the RyR nanodomain in cardiomyocytes</div>
+          <div class="pub-authors">Bergan-Dahl A, Carlson CR, … <strong>Donald M. Bers</strong></div>
+          <div class="pub-summary">Shows that CaMKIIδ relocates to ryanodine receptor nanoclusters during cardiac stimulation, redefining how calcium release is regulated during each heartbeat and opening new avenues for arrhythmia research.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1093/cvr/cvaf187</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1093/cvr/cvaf187" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/41071938/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Medical Microbiology -->
+      <div class="dept-group dept-mmi">
+        <div class="dept-label">Medical Microbiology &amp; Immunology</div>
+
+        <div class="pub-card dept-mmi">
+          <div class="card-top">
+            <span class="journal-badge jb-jbc">J. Biological Chemistry</span>
+            <span class="pub-date">Epub Nov 2025</span>
+          </div>
+          <div class="pub-title">An evolutionary T119R substitution in macaque TIGIT enables proteolytic shedding and reveals clinical antibody vulnerabilities</div>
+          <div class="pub-authors">Pirillo E, Freenor F V, Wamba BEN, Bhatnagar S, Mondal T, <strong>Jogender Tushir-Singh</strong></div>
+          <div class="pub-summary">Identifies a species-specific TIGIT difference that explains why TIGIT-targeting antibodies succeeded preclinically in macaques but failed in human cancer trials; a critical finding for immuno-oncology trial design.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1016/j.jbc.2025.110962</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1016/j.jbc.2025.110962" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/41274505/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /q4-body -->
+  </div><!-- /q4 -->
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!-- Q1 2026 -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <div id="q1">
+    <div class="period">
+      <div class="period-toggle collapsed" onclick="togglePeriod(this,'q1-body')" title="Click to collapse/expand">
+        <div class="period-badge q1">Jan to Mar 2026 &nbsp;<span style="font-weight:400;opacity:0.75;">(2026 Q1)</span></div>
+        <span class="period-chevron">▾</span>
+      </div>
+      <div class="period-line"></div>
+      <div class="period-count">16 papers</div>
+    </div>
+
+    <div class="period-body collapsed" id="q1-body">
+    <!-- Cell Biology -->
+    <div class="dept-group dept-cellbio">
+      <div class="dept-label">Cell Biology &amp; Human Anatomy</div>
+
+            <div class="pub-card dept-cellbio">
+        <div class="card-top">
+          <span class="journal-badge jb-sciadv">Science Advances</span>
+          <span class="pub-date">Feb 2026</span>
+        </div>
+        <div class="pub-title">Oriented cell divisions induce basal progenitors and regulate neural expansion across tissues and species</div>
+        <div class="pub-authors">Boulan B, Lacomme M, … <strong>Anna La Torre</strong>, Cayouette M</div>
+        <div class="pub-summary">Shows that the angle of neural progenitor division governs brain and retinal size across species, with evolutionary implications for how mammalian nervous systems scale in complexity.</div>
+        <div class="card-footer">
+          <span class="card-doi">10.1126/sciadv.adz6827</span>
+          <div style="display:flex;gap:8px;">
+            <a class="btn-paper btn-doi" href="https://doi.org/10.1126/sciadv.adz6827" target="_blank">&#128196; View Paper</a>
+            <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/41637507/" target="_blank">PubMed</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-card dept-cellbio">
+        <div class="card-top">
+          <span class="journal-badge jb-nature">The Lancet</span>
+          <span class="pub-date">Feb 2026</span>
+        </div>
+        <div class="pub-title">Feasibility and safety of cellular therapy for in-utero repair of myelomeningocele (CuRe Trial): a first-in-human, phase 1, single-arm study</div>
+        <div class="pub-authors">Farmer DL, Kumar P, Reynolds E, Lee SY, Powne AB, Pivetti CD, Zwienenberg M, McLennan AS, <strong>Nolta JA</strong>, Brown EG, Saadai P, Hirose S, Wang A.</div>
+        <div class="pub-summary">First-in-human trial showing a placenta-derived stem cell therapy applied during fetal spina bifida surgery is safe and reverses hindbrain herniation. <em>Added after publication.</em></div>
+        <div class="card-footer">
+          <span class="card-doi">10.1016/S0140-6736(25)02466-3</span>
+          <div style="display:flex;gap:8px;">
+            <a class="btn-paper btn-doi" href="https://doi.org/10.1016/S0140-6736(25)02466-3" target="_blank">&#128196; View Paper</a>
+            <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/41763744/" target="_blank">PubMed</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-card dept-cellbio">
+        <div class="card-top">
+          <span class="journal-badge jb-review">Nature Reviews Genetics</span>
+          <span class="pub-date">Jan 2026</span>
+        </div>
+        <div class="pub-title">Monitoring biological effects of somatic cell genome editing</div>
+        <div class="pub-authors">Freedman BS, et al., <strong>Tarantal AF</strong>, et al.</div>
+        <div class="pub-summary">Field-defining review from a consortium of leading US genome-editing labs establishing standards for assessing the safety and efficacy of CRISPR-based therapeutics moving into the clinic. <em>Added after publication.</em></div>
+        <div class="card-footer">
+          <span class="card-doi">10.1038/s41576-025-00916-0</span>
+          <div style="display:flex;gap:8px;">
+            <a class="btn-paper btn-doi" href="https://doi.org/10.1038/s41576-025-00916-0" target="_blank">&#128196; View Paper</a>
+            <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/41530266/" target="_blank">PubMed</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pharmacology -->
+    <div class="dept-group dept-pharma">
+      <div class="dept-label">Pharmacology</div>
+
+      <div class="pub-card dept-pharma">
+        <div class="card-top">
+          <span class="journal-badge jb-natcomm">Nature Communications</span>
+          <span class="pub-date">Jan 2026</span>
+        </div>
+        <div class="pub-title">Structural basis for the subtype-selectivity of KCa2.2 channel activators</div>
+        <div class="pub-authors">Nam YW, … <strong>Heike Wulff</strong>, Zhang M</div>
+        <div class="pub-summary">Cryo-EM structures of the KCa2.2 channel bound to rimtuzalcap establish a structural blueprint for designing highly selective neurological therapeutics targeting small-conductance calcium-activated potassium channels.</div>
+        <div class="card-footer">
+          <span class="card-doi">10.1038/s41467-025-67232-3</span>
+          <div style="display:flex;gap:8px;">
+            <a class="btn-paper btn-doi" href="https://doi.org/10.1038/s41467-025-67232-3" target="_blank">&#128196; View Paper</a>
+            <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/41507196/" target="_blank">PubMed</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-card dept-pharmacology">
+        <div class="card-top">
+          <span class="journal-badge jb-sciadv">Science Advances</span>
+          <span class="pub-date">Mar 2026</span>
+        </div>
+        <div class="pub-title">Regulation of sodium/calcium homeostasis by BacNa gene therapy rescues cardiac dysfunction in chronic heart failure</div>
+        <div class="pub-authors">Wu T, Li Y, Perelli RM, Siu YY, Tornatore A, Nataren J, Jiang X, DeLuca S, <strong>Bers DM</strong>, Henriquez C, Landstrom AP, Bursac N.</div>
+        <div class="pub-summary">First-in-class two-pronged cardiac gene therapy shown to rescue contractile function and prevent arrhythmias in heart failure models, with demonstrated long-term in vivo safety. <em>Added after publication.</em></div>
+        <div class="card-footer">
+          <span class="card-doi">10.1126/sciadv.ady4551</span>
+          <div style="display:flex;gap:8px;">
+            <a class="btn-paper btn-doi" href="https://doi.org/10.1126/sciadv.ady4551" target="_blank">&#128196; View Paper</a>
+            <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/41861014/" target="_blank">PubMed</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MMI -->
+    <div class="dept-group dept-mmi">
+      <div class="dept-label">Medical Microbiology &amp; Immunology</div>
+
+      <div class="pub-card dept-mmi">
+        <div class="card-top">
+          <span class="journal-badge jb-natcomm">Nature Communications</span>
+          <span class="pub-date">Jan 2026</span>
+        </div>
+        <div class="pub-title">Intelectin-2 is a broad-spectrum antimicrobial lectin</div>
+        <div class="pub-authors">Dugan AE, Syangtan D, … <strong>Charles L. Bevins</strong>, Kiessling LL</div>
+        <div class="pub-summary">Identifies intelectin-2 as a dual-function mucosal immune protein that both kills microbes and reinforces the mucus barrier; with implications for IBD, infection susceptibility, and mucosal vaccine design.</div>
+        <div class="card-footer">
+          <span class="card-doi">10.1038/s41467-025-67099-4</span>
+          <div style="display:flex;gap:8px;">
+            <a class="btn-paper btn-doi" href="https://doi.org/10.1038/s41467-025-67099-4" target="_blank">&#128196; View Paper</a>
+            <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/41530121/" target="_blank">PubMed</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-card dept-mmi">
+        <div class="card-top">
+          <span class="journal-badge jb-mbio">mBio</span>
+          <span class="pub-date">Feb 2026</span>
+        </div>
+        <div class="pub-title">A new mouse model of typhoid fever using <em>Salmonella</em> Paratyphi C as a surrogate pathogen</div>
+        <div class="pub-authors">Pham HT, … <strong>Renée M. Tsolis</strong>, <strong>Andreas J. Bäumler</strong></div>
+        <div class="pub-summary">Develops an improved small-animal model for drug-resistant typhoid fever and vaccine testing, addressing a long-standing gap in the field caused by host-specificity of <em>S.</em> Typhi.</div>
+        <div class="card-footer">
+          <span class="card-doi">10.1128/mbio.03622-25</span>
+          <div style="display:flex;gap:8px;">
+            <a class="btn-paper btn-doi" href="https://doi.org/10.1128/mbio.03622-25" target="_blank">&#128196; View Paper</a>
+            <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/41543251/" target="_blank">PubMed</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-card dept-mmi">
+        <div class="card-top">
+          <span class="journal-badge jb-nature">Science</span>
+          <span class="pub-date">Mar 2026</span>
+        </div>
+        <div class="pub-title">Host-derived nitrate fuels indole production by <em>Escherichia coli</em> to drive chronic kidney disease progression</div>
+        <div class="pub-authors">Lee JY, Mahan SP, Parente de Carvalho T, Nguyen H, Singai C, Camacho L, Tekeli M, Kwon YJ, Lee JW, Santos RL, <strong>Tsolis RM</strong>, <strong>Winter SE</strong>, <strong>B&auml;umler AJ</strong>.</div>
+        <div class="pub-summary">Shows how host nitrate production during chronic kidney disease fuels gut <em>E. coli</em> to generate the uremic toxin indoxyl sulfate, worsening kidney disease progression. <em>Added after publication.</em></div>
+        <div class="card-footer">
+          <span class="card-doi">10.1126/science.ady5217</span>
+          <div style="display:flex;gap:8px;">
+            <a class="btn-paper btn-doi" href="https://doi.org/10.1126/science.ady5217" target="_blank">&#128196; View Paper</a>
+            <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/41855331/" target="_blank">PubMed</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Physiology Q1 -->
+    <div class="dept-group dept-physio">
+      <div class="dept-label">Physiology &amp; Membrane Biology</div>
+
+      <div class="pub-card dept-physio review">
+        <div class="card-top">
+          <span class="journal-badge jb-review">J. Physiology · Perspectives</span>
+          <span class="pub-date">Jan 2026</span>
+        </div>
+        <div class="pub-title">Piezo1 in intestinal smooth muscle cells: Emerging perspectives</div>
+        <div class="pub-authors">Bautista GM, <strong>L. Fernando Santana</strong>, Martin MG</div>
+        <div class="pub-summary">Highlights Piezo1's role in mechanosensing and regulation of intestinal muscle contractions, with implications for understanding gut motility disorders.</div>
+        <div class="flag">⚠ Perspectives piece; not primary research</div>
+        <div class="card-footer">
+          <span class="card-doi">10.1113/JP287636</span>
+          <div style="display:flex;gap:8px;">
+            <a class="btn-paper btn-doi" href="https://doi.org/10.1113/JP287636" target="_blank">&#128196; View Paper</a>
+            <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/41231209/" target="_blank">PubMed</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-card dept-physio">
+        <div class="card-top">
+          <span class="journal-badge jb-jphys">Journal of Physiology</span>
+          <span class="pub-date">Feb 2026</span>
+        </div>
+        <div class="pub-title">Kidney disease impairs tendon function in rats</div>
+        <div class="pub-authors">Hayden CMT, … <strong>Keith Baar</strong></div>
+        <div class="pub-summary">First direct evidence that chronic kidney disease mechanically weakens tendons, establishing a validated animal model for studying and reversing musculoskeletal complications of CKD.</div>
+        <div class="card-footer">
+          <span class="card-doi">10.1113/JP289753</span>
+          <div style="display:flex;gap:8px;">
+            <a class="btn-paper btn-doi" href="https://doi.org/10.1113/JP289753" target="_blank">&#128196; View Paper</a>
+            <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/41474384/" target="_blank">PubMed</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-card dept-physiology">
+        <div class="card-top">
+          <span class="journal-badge jb-cardio">Circulation Research</span>
+          <span class="pub-date">Mar 2026</span>
+        </div>
+        <div class="pub-title">Phosphoinositide depletion and compensatory phospho-signaling in angiotensin II-induced heart disease: protection through PTEN inhibition</div>
+        <div class="pub-authors">Westhoff M, Voelker TL, Del Villar SG, Thai PN, Voorhees HM, Roslan FF, <strong>Martin JL</strong>, <strong>Bossuyt J</strong>, Sirish P, <strong>Chiamvimonvat N</strong>, <strong>Nieves-Cintr&oacute;n M</strong>, <strong>Dickson EJ</strong>, <strong>Dixon RE</strong>.</div>
+        <div class="pub-summary">Identifies phosphatidylinositol (3,4,5)-trisphosphate depletion as a critical link between chronic angiotensin II signaling and cardiac dysfunction; PTEN inhibition protects against cardiac dysfunction and fibrosis. <em>Added after publication.</em></div>
+        <div class="card-footer">
+          <span class="card-doi">10.1161/CIRCRESAHA.125.327896</span>
+          <div style="display:flex;gap:8px;">
+            <a class="btn-paper btn-doi" href="https://doi.org/10.1161/CIRCRESAHA.125.327896" target="_blank">&#128196; View Paper</a>
+            <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/41859814/" target="_blank">PubMed</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-card dept-physiology">
+        <div class="card-top">
+          <span class="journal-badge jb-jphys">Journal of General Physiology</span>
+          <span class="pub-date">Mar 2026</span>
+        </div>
+        <div class="pub-title">Beat-locked ATP microdomains in the sinoatrial node map a Ca&sup2;&#8314;-timed energetic hierarchy and regional pacemaker roles</div>
+        <div class="pub-authors">Mu&ntilde;oz MF, Matsumoto C, Rhana P, Manning D, Bautista GM, Collier DM, <strong>Santana LF</strong>.</div>
+        <div class="pub-summary">Real-time ATP imaging in mouse sinoatrial node cells shows pacemaker cells generate ATP in precise beat-by-beat bursts synchronized to each Ca&sup2;&#8314; transient. <em>Added after publication.</em></div>
+        <div class="card-footer">
+          <span class="card-doi">10.1085/jgp.202513874</span>
+          <div style="display:flex;gap:8px;">
+            <a class="btn-paper btn-doi" href="https://doi.org/10.1085/jgp.202513874" target="_blank">&#128196; View Paper</a>
+            <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/41915044/" target="_blank">PubMed</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Public Health Sciences -->
+    <div class="dept-group dept-phs">
+      <div class="dept-label">Public Health Sciences</div>
+
+      <div class="pub-card dept-phs">
+        <div class="card-top">
+          <span class="journal-badge jb-natmed">Nature Medicine</span>
+          <span class="pub-date">Mar 2026</span>
+        </div>
+        <div class="pub-title">Deleterious coding variation associated with autism is shared across ancestries</div>
+        <div class="pub-authors">Natividad Avila M, Jung S, Satterstrom FK, &hellip; <strong>Irva Hertz-Picciotto</strong>, &hellip; <strong>Rebecca Schmidt</strong>, &hellip; Buxbaum JD &middot; GALA Consortium</div>
+        <div class="pub-summary">The largest sequencing study of autism in Latin American individuals (n&nbsp;&gt;&nbsp;15,000) identifies 35 genome-wide significant autism-associated genes with substantial overlap across ancestries, demonstrating that autism biology is consistent across populations and supporting the utility of genetic testing in diverse backgrounds.</div>
+        <div class="card-footer">
+          <span class="card-doi">10.1038/s41591-026-04228-6</span>
+          <div style="display:flex;gap:8px;">
+            <a class="btn-paper btn-doi" href="https://doi.org/10.1038/s41591-026-04228-6" target="_blank">&#128196; View Paper</a>
+            <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/41912808/" target="_blank">PubMed</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-card dept-phs">
+        <div class="card-top">
+          <span class="journal-badge jb-envint">Environment International</span>
+          <span class="pub-date">Feb 2026</span>
+        </div>
+        <div class="pub-title">Prenatal exposure to wildfire-related PM<sub>2.5</sub> and autism spectrum disorder in children born in California between 2001&ndash;2019</div>
+        <div class="pub-authors">O&rsquo;Sharkey K, &hellip; Goodrich AJ, Conlon KC, Nu&ntilde;o M, Bennett DH, &hellip; <strong>Rebecca J. Schmidt</strong></div>
+        <div class="pub-summary">Analysis of 8.6 million California births reveals that intense wildfire smoke exposure during pregnancy increases ASD risk by up to 50%, particularly in low-background-pollution and rural settings; underscoring the need for targeted policies as wildfire frequency rises.</div>
+        <div class="card-footer">
+          <span class="card-doi">10.1016/j.envint.2026.110131</span>
+          <div style="display:flex;gap:8px;">
+            <a class="btn-paper btn-doi" href="https://doi.org/10.1016/j.envint.2026.110131" target="_blank">&#128196; View Paper</a>
+            <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/41687340/" target="_blank">PubMed</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-card dept-phs">
+        <div class="card-top">
+          <span class="journal-badge jb-envepid">Environmental Epidemiology</span>
+          <span class="pub-date">Jan 2026</span>
+        </div>
+        <div class="pub-title">Trees; not grass and other greenery; associated with lower heart disease risk in cities</div>
+        <div class="pub-authors"><strong>Peter James</strong> et al.</div>
+        <div class="pub-summary">Using over 350 million street-view images across the Nurses&rsquo; Health Study, finds that urban tree canopy is associated with a 4% decrease in cardiovascular disease, while grass and shrubs show no benefit or a slight increase; with implications for urban planning and environmental health policy.</div>
+        <div class="card-footer">
+          <span class="card-doi">10.1097/ee9.0000000000000442</span>
+          <div style="display:flex;gap:8px;">
+            <a class="btn-paper btn-doi" href="https://doi.org/10.1097/ee9.0000000000000442" target="_blank">&#128196; View Paper</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-card dept-phs">
+        <div class="card-top">
+          <span class="journal-badge jb-review">Annals of Internal Medicine</span>
+          <span class="pub-date">Mar 2026</span>
+        </div>
+        <div class="pub-title">Outcomes of density-targeted supplemental breast magnetic resonance imaging screening by breast cancer risk: long-term health and economic considerations</div>
+        <div class="pub-authors">Tosteson AN, Stout NK, Su YR, van Ravesteyn NT, Lowry KP, et al., <strong>Miglioretti DL</strong>, Kerlikowske K, Lee CI.</div>
+        <div class="pub-summary">Simulation-modeling study informing cost-effectiveness and clinical guidance on supplemental breast MRI screening for women with dense breasts. <em>Added after publication.</em></div>
+        <div class="card-footer">
+          <span class="card-doi">10.7326/ANNALS-25-00792</span>
+          <div style="display:flex;gap:8px;">
+            <a class="btn-paper btn-doi" href="https://doi.org/10.7326/ANNALS-25-00792" target="_blank">&#128196; View Paper</a>
+            <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/41771133/" target="_blank">PubMed</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </div><!-- /q1-body -->
+  </div><!-- /q1 -->
+
+  <!-- ═════════════════════ Q2 2026 ═════════════════════ -->
+  <div id="q2">
+    <div class="period">
+      <div class="period-toggle collapsed" onclick="togglePeriod(this,'q2-body')" title="Click to collapse/expand">
+        <div class="period-badge q1" style="color:#DAAA00;">Apr to Jun 2026 &nbsp;<span style="font-weight:400;opacity:0.75;">(2026 Q2)</span></div>
+        <span class="period-chevron">&#9662;</span>
+      </div>
+      <div class="period-line"></div>
+      <div class="period-count">25 papers</div>
+    </div>
+
+    <div class="period-body collapsed" id="q2-body">
+      <!-- Cell Biology & Human Anatomy -->
+      <div class="dept-group dept-cellbio">
+        <div class="dept-label">Cell Biology &amp; Human Anatomy</div>
+
+      <div class="pub-card dept-cellbio">
+        <div class="card-top">
+          <span class="journal-badge jb-pnas">PNAS</span>
+          <span class="pub-date">Apr 2026</span>
+        </div>
+        <div class="pub-title">Uncoupling neocortical neuron fate and migration via a Let-7-RBX2 axis</div>
+        <div class="pub-authors">Decker SC, Hino K, <strong>La Torre A</strong>, <strong>Sim&oacute; S</strong>.</div>
+        <div class="pub-summary">Identifies a microRNA (let-7)&ndash;ubiquitin ligase (RBX2) mechanism that separately controls neuronal cell-fate decisions and physical migration in the developing neocortex.</div>
+        <div class="card-footer">
+          <span class="card-doi">10.1073/pnas.2528396123</span>
+          <div style="display:flex;gap:8px;">
+            <a class="btn-paper btn-doi" href="https://doi.org/10.1073/pnas.2528396123" target="_blank">&#128196; View Paper</a>
+            <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42012943/" target="_blank">PubMed</a>
+          </div>
+        </div>
+      </div>
+
+      </div>
+
+      <!-- Medical Microbiology & Immunology -->
+      <div class="dept-group dept-mmi">
+        <div class="dept-label">Medical Microbiology &amp; Immunology</div>
+
+      <div class="pub-card dept-mmi">
+        <div class="card-top">
+          <span class="journal-badge jb-cell">Cell Host &amp; Microbe</span>
+          <span class="pub-date">Jun 2026</span>
+        </div>
+        <div class="pub-title">Microbiota-derived short-chain fatty acids mediate <em>Candida albicans</em> gastrointestinal colonization resistance</div>
+        <div class="pub-authors">Mishra A, Palmer S, Zarek C, et al., <strong>Winter SE</strong>, Hooper LV, Koh AY.</div>
+        <div class="pub-summary">Identifies short-chain fatty acids as a key microbiota-derived mechanism restricting fungal gut colonization.</div>
+        <div class="card-footer">
+          <span class="card-doi">10.1016/j.chom.2026.05.007</span>
+          <div style="display:flex;gap:8px;">
+            <a class="btn-paper btn-doi" href="https://doi.org/10.1016/j.chom.2026.05.007" target="_blank">&#128196; View Paper</a>
+            <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42242208/" target="_blank">PubMed</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-card dept-mmi">
+        <div class="card-top">
+          <span class="journal-badge jb-molcell">Molecular Cell</span>
+          <span class="pub-date">Jun 2026</span>
+        </div>
+        <div class="pub-title">Does gut oxygenation drive colorectal cancer? (Commentary)</div>
+        <div class="pub-authors"><strong>Larabi AB</strong>, <strong>B&auml;umler AJ</strong>.</div>
+        <div class="pub-summary">Invited commentary discussing new findings on how a low-oxygen gut niche promotes colorectal tumorigenesis.</div>
+        <div class="card-footer">
+          <span class="card-doi">10.1016/j.molcel.2026.05.021</span>
+          <div style="display:flex;gap:8px;">
+            <a class="btn-paper btn-doi" href="https://doi.org/10.1016/j.molcel.2026.05.021" target="_blank">&#128196; View Paper</a>
+            <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42314648/" target="_blank">PubMed</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-card dept-mmi">
+        <div class="card-top">
+          <span class="journal-badge jb-natmed">Nature Medicine</span>
+          <span class="pub-date">May 2026</span>
+        </div>
+        <div class="pub-title">Closing the gap on antifungal resistance (Commentary)</div>
+        <div class="pub-authors">Verweij PE, et al., <strong>Thompson GR</strong>.</div>
+        <div class="pub-summary">High-profile international consensus commentary on the global antifungal resistance crisis.</div>
+        <div class="card-footer">
+          <span class="card-doi">10.1038/s41591-026-04334-5</span>
+          <div style="display:flex;gap:8px;">
+            <a class="btn-paper btn-doi" href="https://doi.org/10.1038/s41591-026-04334-5" target="_blank">&#128196; View Paper</a>
+            <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/41986735/" target="_blank">PubMed</a>
+          </div>
+        </div>
+      </div>
+
+      </div>
+
+      <!-- Pharmacology -->
+      <div class="dept-group dept-pharmacology">
+        <div class="dept-label">Pharmacology</div>
+
+      <div class="pub-card dept-pharmacology">
+        <div class="card-top">
+          <span class="journal-badge jb-sciadv">Science Advances</span>
+          <span class="pub-date">May 2026</span>
+        </div>
+        <div class="pub-title">State-specific NMDA receptor inhibition by memantine explains drug tolerability</div>
+        <div class="pub-authors">Phillips MB, Povysheva NV, Neureiter EG, Nigam A, Harnett-Scott KA, <strong>Hell JW</strong>, Aizenman E, Johnson JW.</div>
+        <div class="pub-summary">Shows why memantine (an Alzheimer&rsquo;s drug) is well tolerated while ketamine is not, despite both blocking the same NMDA receptor site.</div>
+        <div class="card-footer">
+          <span class="card-doi">10.1126/sciadv.aec3154</span>
+          <div style="display:flex;gap:8px;">
+            <a class="btn-paper btn-doi" href="https://doi.org/10.1126/sciadv.aec3154" target="_blank">&#128196; View Paper</a>
+            <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42201999/" target="_blank">PubMed</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-card dept-pharmacology">
+        <div class="card-top">
+          <span class="journal-badge jb-struct">Structure</span>
+          <span class="pub-date">May 2026</span>
+        </div>
+        <div class="pub-title">Structural basis for the subtype-selective activation of KCa3.1 channels</div>
+        <div class="pub-authors">Ramanishka A, Nasburg JA, Xu Y, Ma X, Mehvar R, Cui M, Nam YW, <strong>Wulff H</strong>, Zhang M.</div>
+        <div class="pub-summary">Cryo-EM structures reveal how the drug SKA-111 achieves roughly 70-fold selectivity for KCa3.1 over KCa2.2.</div>
+        <div class="card-footer">
+          <span class="card-doi">10.1016/j.str.2026.04.010</span>
+          <div style="display:flex;gap:8px;">
+            <a class="btn-paper btn-doi" href="https://doi.org/10.1016/j.str.2026.04.010" target="_blank">&#128196; View Paper</a>
+            <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42140186/" target="_blank">PubMed</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-card dept-pharmacology">
+        <div class="card-top">
+          <span class="journal-badge jb-circ">Circulation</span>
+          <span class="pub-date">Jun 2026</span>
+        </div>
+        <div class="pub-title">Tirzepatide regulates pacemaker function by modulating cAMP and calcium dynamics in human sinoatrial node cells</div>
+        <div class="pub-authors">Ren L, Belbachir N, Zhang H, Thai PN, Huang R, Zhu W, Wu X, Xie M, Gao J, Kim HY, Liu T, Sun J, Ghazizadeh Z, <strong>Navedo MF</strong>, Wu JC.</div>
+        <div class="pub-summary">First mechanistic evidence that the blockbuster GLP-1/GIP drug tirzepatide directly modulates cardiac pacemaker cell signaling.</div>
+        <div class="card-footer">
+          <span class="card-doi">10.1161/CIRCULATIONAHA.125.076669</span>
+          <div style="display:flex;gap:8px;">
+            <a class="btn-paper btn-doi" href="https://doi.org/10.1161/CIRCULATIONAHA.125.076669" target="_blank">&#128196; View Paper</a>
+            <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42330097/" target="_blank">PubMed</a>
+          </div>
+        </div>
+      </div>
+
+      </div>
+
+      <!-- Physiology & Membrane Biology -->
+      <div class="dept-group dept-physiology">
+        <div class="dept-label">Physiology &amp; Membrane Biology</div>
+
+      <div class="pub-card dept-physiology">
+        <div class="card-top">
+          <span class="journal-badge jb-pnas">PNAS</span>
+          <span class="pub-date">Apr 2026</span>
+        </div>
+        <div class="pub-title">Heat- and PIP2-dependent TRPM4 activity underlies mutually exclusive human diseases</div>
+        <div class="pub-authors">Tian Y, Bae S, Wu X, Rouen KC, Hern&aacute;ndez-Gonz&aacute;lez A, Han Y, Al Tekreeti A, Vu S, Chen I, Li E, <strong>Vorobyov I</strong>, <strong>Yarov-Yarovoy V</strong>, Suh BC, Hwang ST, <strong>Zheng J</strong>.</div>
+        <div class="pub-summary">Resolves why gain-of-function TRPM4 mutations cause either heart disease or skin disease but never both, identifying PIP2 and temperature as the key regulators.</div>
+        <div class="card-footer">
+          <span class="card-doi">10.1073/pnas.2530328123</span>
+          <div style="display:flex;gap:8px;">
+            <a class="btn-paper btn-doi" href="https://doi.org/10.1073/pnas.2530328123" target="_blank">&#128196; View Paper</a>
+            <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/41945444/" target="_blank">PubMed</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-card dept-physiology">
+        <div class="card-top">
+          <span class="journal-badge jb-circ">Circulation Research</span>
+          <span class="pub-date">Jun 2026</span>
+        </div>
+        <div class="pub-title">Aging disrupts L-type Ca&sup2;&#8314; channel organization and function in pacemaker cells</div>
+        <div class="pub-authors">Vivas O, Baudot M, Madden R, Pinon-Teal WL, Hunt MS, Choi S, Pournejati R, Flores VA, <strong>Santana LF</strong>, Moreno CM.</div>
+        <div class="pub-summary">Identifies caveolin-3 loss and disrupted L-type Ca&sup2;&#8314; channel clustering as a structural driver of age-related slowing of the cardiac pacemaker.</div>
+        <div class="card-footer">
+          <span class="card-doi">10.1161/CIRCRESAHA.125.327894</span>
+          <div style="display:flex;gap:8px;">
+            <a class="btn-paper btn-doi" href="https://doi.org/10.1161/CIRCRESAHA.125.327894" target="_blank">&#128196; View Paper</a>
+            <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42318626/" target="_blank">PubMed</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-card dept-physiology">
+        <div class="card-top">
+          <span class="journal-badge jb-cell">Cell Stem Cell</span>
+          <span class="pub-date">May 2026</span>
+        </div>
+        <div class="pub-title">From breakdown to repair: a human organoid model of menstruation (Preview)</div>
+        <div class="pub-authors"><strong>Zhang ET</strong>.</div>
+        <div class="pub-summary">Invited Previews commentary highlighting a novel endometrial organoid model of menstruation.</div>
+        <div class="card-footer">
+          <span class="card-doi">10.1016/j.stem.2026.04.010</span>
+          <div style="display:flex;gap:8px;">
+            <a class="btn-paper btn-doi" href="https://doi.org/10.1016/j.stem.2026.04.010" target="_blank">&#128196; View Paper</a>
+            <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42102721/" target="_blank">PubMed</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-card dept-physiology">
+        <div class="card-top">
+          <span class="journal-badge jb-diabet">Diabetologia</span>
+          <span class="pub-date">Jun 2026</span>
+        </div>
+        <div class="pub-title">Somatostatin receptors shape insulin and glucagon output within the pancreatic islet in mice through direct and paracrine effects</div>
+        <div class="pub-authors">Hart RG, Lee JJ, Zhai K, Lee S, Chauhan R, Hosseini A, Nguyen AD, <strong>Huising MO</strong>.</div>
+        <div class="pub-summary">Resolves how a single delta-cell hormone (somatostatin) differentially inhibits alpha and beta cells; a companion preview appeared the same quarter in <em>Cell Systems</em>.</div>
+        <div class="card-footer">
+          <span class="card-doi">10.1007/s00125-026-06769-4</span>
+          <div style="display:flex;gap:8px;">
+            <a class="btn-paper btn-doi" href="https://doi.org/10.1007/s00125-026-06769-4" target="_blank">&#128196; View Paper</a>
+            <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42322376/" target="_blank">PubMed</a>
+          </div>
+        </div>
+      </div>
+
+      </div>
+
+      <!-- Public Health Sciences -->
+      <div class="dept-group dept-phs">
+        <div class="dept-label">Public Health Sciences</div>
+
+      <div class="pub-card dept-phs">
+        <div class="card-top">
+          <span class="journal-badge jb-combio">Communications Biology</span>
+          <span class="pub-date">Jun 2026</span>
+        </div>
+        <div class="pub-title">Prenatal cell-free DNA methylome detects association with autism and maternal obesity</div>
+        <div class="pub-authors">Williams LA, Habibi E, Miller M, <strong>Hertz-Picciotto I</strong>, Walker CK, <strong>Schmidt RJ</strong>, LaSalle JM.</div>
+        <div class="pub-summary">Shows that cell-free fetal/placental DNA methylation signatures in maternal blood during pregnancy can predict autism spectrum disorder risk.</div>
+        <div class="card-footer">
+          <span class="card-doi">10.1038/s42003-026-10500-9</span>
+          <div style="display:flex;gap:8px;">
+            <a class="btn-paper btn-doi" href="https://doi.org/10.1038/s42003-026-10500-9" target="_blank">&#128196; View Paper</a>
+            <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42331993/" target="_blank">PubMed</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-card dept-phs">
+        <div class="card-top">
+          <span class="journal-badge jb-jama">JAMA Network Open</span>
+          <span class="pub-date">Jun 2026</span>
+        </div>
+        <div class="pub-title">Subfecundity, infertility treatment, and child neurodevelopment</div>
+        <div class="pub-authors">Kahn LG, Hipwell AE, Stanford JB, Galai N, Zhao H, et al., <strong>Schmidt RJ</strong>.</div>
+        <div class="pub-summary">Large national cohort study (15,382 dyads) finding subfecundity; not infertility treatment itself; is independently associated with higher risk of autism and behavioral problems.</div>
+        <div class="card-footer">
+          <span class="card-doi">10.1001/jamanetworkopen.2026.17324</span>
+          <div style="display:flex;gap:8px;">
+            <a class="btn-paper btn-doi" href="https://doi.org/10.1001/jamanetworkopen.2026.17324" target="_blank">&#128196; View Paper</a>
+            <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42258210/" target="_blank">PubMed</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-card dept-phs">
+        <div class="card-top">
+          <span class="journal-badge jb-review">Nature Reviews Clinical Oncology</span>
+          <span class="pub-date">May 2026</span>
+        </div>
+        <div class="pub-title">In what clinical settings are the MASAI trial results applicable? (Commentary)</div>
+        <div class="pub-authors">Kerlikowske K, Lowry KP, <strong>Miglioretti DL</strong>.</div>
+        <div class="pub-summary">Invited expert commentary interpreting the practice implications of the MASAI breast-cancer screening trial.</div>
+        <div class="card-footer">
+          <span class="card-doi">10.1038/s41571-026-01143-0</span>
+          <div style="display:flex;gap:8px;">
+            <a class="btn-paper btn-doi" href="https://doi.org/10.1038/s41571-026-01143-0" target="_blank">&#128196; View Paper</a>
+            <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/41876852/" target="_blank">PubMed</a>
+          </div>
+        </div>
+      </div>
+
+      </div>
+
+
+      <div class="addendum-note">Added after the Q2 issue: 11 papers published online or in print in April to June 2026 that were identified after publication.</div>
+
+      <!-- Biochemistry &amp; Molecular Medicine -->
+      <div class="dept-group dept-biochem">
+        <div class="dept-label">Biochemistry &amp; Molecular Medicine</div>
+
+        <div class="pub-card dept-biochem">
+          <div class="card-top">
+            <span class="journal-badge jb-generic">ACS Chemical Neuroscience</span>
+            <span class="pub-date">May 2026</span>
+          </div>
+          <div class="pub-title">R-MDDMA is a safer analogue of MDMA with therapeutic potential</div>
+          <div class="pub-authors">Vargas MV, Hatzipantelis CJ, Dunlap LE, Tombari RJ, Avanes AA, Vaillancourt S, Llorach P, Salgado JS, Heifets BD, <strong>Olson DE</strong></div>
+          <div class="pub-summary">Identifies R-MDDMA as an MDMA analogue that avoids serotonin release and 5-HT2B activation, liabilities that have slowed clinical development of MDMA for PTSD and depression.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1021/acschemneuro.5c00891</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1021/acschemneuro.5c00891" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42010927/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card dept-biochem">
+          <div class="card-top">
+            <span class="journal-badge jb-generic">Genome Research</span>
+            <span class="pub-date">Jun 2026</span>
+          </div>
+          <div class="pub-title">Influence of cis-regulatory elements on expression divergence in human segmental duplications</div>
+          <div class="pub-authors">Shew CJ, Kaya G, McGinty SP, <strong>Dennis MY</strong></div>
+          <div class="pub-summary">Long-read expression and epigenomic data show that human-specific duplicated gene copies tend to be less active than their ancestral paralogs, and trace the divergence to cis-regulatory elements.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1101/gr.281526.125</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1101/gr.281526.125" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42303450/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cell Biology &amp; Human Anatomy -->
+      <div class="dept-group dept-cellbio">
+        <div class="dept-label">Cell Biology &amp; Human Anatomy</div>
+
+        <div class="pub-card dept-cellbio">
+          <div class="card-top">
+            <span class="journal-badge jb-generic">Development</span>
+            <span class="pub-date">May 2026</span>
+          </div>
+          <div class="pub-title">Roles of sonic hedgehog signaling in retinal patterning and neurogenesis during mammalian eye development</div>
+          <div class="pub-authors">Krueger MR, Cheema SK, <strong>Simo S</strong>, Levine EM, <strong>Brown NL</strong>, <strong>La Torre A</strong></div>
+          <div class="pub-summary">Defines when sonic hedgehog signaling is required for retinal patterning and for balancing proliferation and differentiation as the mammalian retina forms.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1242/dev.205143</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1242/dev.205143" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42117501/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card dept-cellbio">
+          <div class="card-top">
+            <span class="journal-badge jb-generic">Molecular Psychiatry</span>
+            <span class="pub-date">May 2026</span>
+          </div>
+          <div class="pub-title">Prenatal maternal immune activation triggers lasting cell-specific transcriptomic dysregulation in the amygdala of primate offspring</div>
+          <div class="pub-authors">Ander BP, Carlson EL, Kamboj S, Hanson KL, <strong>Murray KD</strong>, Fox AS, <strong>Bauman MD</strong>, <strong>Schumann CM</strong></div>
+          <div class="pub-summary">In a rhesus macaque model, maternal immune activation during pregnancy produces lasting, cell-type-specific gene expression changes in the offspring amygdala, relevant to autism and schizophrenia risk.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1038/s41380-025-03403-4</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1038/s41380-025-03403-4" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/41413202/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Medical Microbiology &amp; Immunology -->
+      <div class="dept-group dept-mmi">
+        <div class="dept-label">Medical Microbiology &amp; Immunology</div>
+
+        <div class="pub-card dept-mmi">
+          <div class="card-top">
+            <span class="journal-badge jb-generic">Genome Biology</span>
+            <span class="pub-date">Apr 2026</span>
+          </div>
+          <div class="pub-title">Sex and tissue resolved co-expression networks reveal a female placental-brain axis protective against prenatal PCB exposure</div>
+          <div class="pub-authors">Chau KH, Neier K, Valenzuela AE, <strong>Schmidt RJ</strong>, Durbin-Johnson B, Lein PJ, Korf I, <strong>LaSalle JM</strong></div>
+          <div class="pub-summary">Placenta and brain co-expression networks in a mouse PCB exposure model point to a female-specific protective axis, offering insight into the male bias of neurodevelopmental disorders.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1186/s13059-026-04052-8</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1186/s13059-026-04052-8" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/41943130/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card dept-mmi">
+          <div class="card-top">
+            <span class="journal-badge jb-generic">Cell Reports</span>
+            <span class="pub-date">Jun 2026</span>
+          </div>
+          <div class="pub-title">Cholera-toxin-induced disease generates epithelial-cell-derived L-lactate that promotes <em>Vibrio cholerae</em> growth in the small intestine</div>
+          <div class="pub-authors">Gutierrez MP, Hall JL, Masson HLP, Winter MG, <strong>Winter SE</strong>, Rivera-Ch&aacute;vez F</div>
+          <div class="pub-summary">Shows that cholera toxin induces host LDHA and epithelial L-lactate production, which <em>V. cholerae</em> uses to gain a growth advantage in the small intestine.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1016/j.celrep.2026.117509</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1016/j.celrep.2026.117509" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42262925/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pharmacology -->
+      <div class="dept-group dept-pharma">
+        <div class="dept-label">Pharmacology</div>
+
+        <div class="pub-card dept-pharma">
+          <div class="card-top">
+            <span class="journal-badge jb-generic">Circulation Research</span>
+            <span class="pub-date">May 2026</span>
+          </div>
+          <div class="pub-title">T-World virtual human cardiomyocyte. I. Development, validation, and cell arrhythmogenesis; II. Organ-scale simulations and applications</div>
+          <div class="pub-authors">Tomek J, Holmes M, et al., <strong>Bers DM</strong>, Rodriguez B, Heijman J</div>
+          <div class="pub-summary">A two-part release of T-World, a human cardiomyocyte model that reproduces all major cellular arrhythmia mechanisms and scales to organ-level simulations for research, drug development, and regulatory science.</div>
+          <div class="card-footer">
+            <span class="card-doi"></span>
+            <div style="display:flex;gap:8px;">
+              
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/41944014/" target="_blank">PubMed (Part 1)</a><a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/41948815/" target="_blank">PubMed (Part 2)</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card dept-pharma">
+          <div class="card-top">
+            <span class="journal-badge jb-generic">Nature Communications</span>
+            <span class="pub-date">Jun 2026</span>
+          </div>
+          <div class="pub-title">Mitochondrial protein OPA3 sustains cardiac function by regulating calcium handling in male mice</div>
+          <div class="pub-authors">Geng N, Chen T, Li H, Lu S, Wang Y, Gao L, <strong>Bers DM</strong>, Lu X</div>
+          <div class="pub-summary">Finds OPA3 is reduced in human and mouse heart failure and that cardiomyocyte-specific loss causes dilated cardiomyopathy with impaired Ca<sup>2+</sup> handling.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1038/s41467-026-73991-4</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1038/s41467-026-73991-4" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42310006/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card dept-pharma">
+          <div class="card-top">
+            <span class="journal-badge jb-generic">Stem Cell Reports</span>
+            <span class="pub-date">Apr 2026</span>
+          </div>
+          <div class="pub-title">A humanized engineered heart tissue platform for cardiotoxicity assessment</div>
+          <div class="pub-authors">Sun YH, Diloretto DA, Kao HKJ, Sirish P, et al., <strong>Gomes AV</strong>, Haj FG, <strong>Nolta JA</strong>, Chan JW, Hammock BD, Lieu DK, <strong>Chiamvimonvat N</strong></div>
+          <div class="pub-summary">Combines decellularized human ventricular matrix with iPSC-derived cardiomyocytes to build contracting engineered heart tissue for testing the cardiotoxicity of environmental chemicals.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1016/j.stemcr.2026.102856</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1016/j.stemcr.2026.102856" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/41861817/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Public Health Sciences -->
+      <div class="dept-group dept-phs">
+        <div class="dept-label">Public Health Sciences</div>
+
+        <div class="pub-card dept-phs">
+          <div class="card-top">
+            <span class="journal-badge jb-generic">JAMA Neurology</span>
+            <span class="pub-date">Jun 2026</span>
+          </div>
+          <div class="pub-title">Brain imaging biomarkers and cognitive outcomes in a multidomain lifestyle intervention: the POINTER imaging ancillary study</div>
+          <div class="pub-authors">Harrison TM, <strong>Harvey DJ</strong>, et al., <strong>Whitmer RA</strong>, et al., DeCarli C, Landau SM</div>
+          <div class="pub-summary">Imaging ancillary study of the U.S. POINTER lifestyle trial testing whether brain changes track intervention effects and whether imaging biomarkers predict who benefits cognitively.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1001/jamaneurol.2026.0832</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1001/jamaneurol.2026.0832" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42008251/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card dept-phs">
+          <div class="card-top">
+            <span class="journal-badge jb-generic">JAMA Network Open</span>
+            <span class="pub-date">Jun 2026</span>
+          </div>
+          <div class="pub-title">Federal policy changes and online diversity, equity, and inclusion content among US medical schools</div>
+          <div class="pub-authors">Sreepada S, <strong>Ko M</strong></div>
+          <div class="pub-summary">Cohort study tracking how US medical school websites displayed DEI language and content at three time points in 2025 as federal policy changed.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1001/jamanetworkopen.2026.16661</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1001/jamanetworkopen.2026.16661" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42241000/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /q2-body -->
+  </div><!-- /q2 -->
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!-- Q3 2026 -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <div id="q3">
+    <div class="period">
+      <div class="period-toggle" onclick="togglePeriod(this,'q3-body')" title="Click to collapse/expand">
+        <div class="period-badge q3">Jul to Sep 2026 &nbsp;<span style="font-weight:400;opacity:0.75;">(2026 Q3)</span></div>
+        <span class="period-chevron">▾</span>
+      </div>
+      <div class="period-line"></div>
+      <div class="period-count">22 papers</div>
+    </div>
+
+    <div class="period-body" id="q3-body">
+
+      <!-- Biochemistry &amp; Molecular Medicine -->
+      <div class="dept-group dept-biochem">
+        <div class="dept-label">Biochemistry &amp; Molecular Medicine</div>
+
+        <div class="pub-card dept-biochem">
+          <div class="card-top">
+            <span class="journal-badge jb-generic">Cell Genomics</span>
+            <span class="pub-date">Aug 2026</span>
+          </div>
+          <div class="pub-title">Single-library chromosome-scale diploid assemblies of vole genomes resolve a species-specific duplication implicated in pair bonding</div>
+          <div class="pub-authors">Abuelanin M, Kaya G, Lake JA, et al., Bales KL, et al., Tollkuhn J, <strong>Dennis MY</strong></div>
+          <div class="pub-summary">Chromosome-scale prairie and meadow vole genomes from a single sequencing library reveal a prairie-vole-specific duplication of the vasopressin receptor gene <em>Avpr1a</em>, a candidate contributor to pair bonding; led by postdoc Mohamed Abuelanin.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1016/j.xgen.2026.101336</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1016/j.xgen.2026.101336" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42561954/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card dept-biochem">
+          <div class="card-top">
+            <span class="journal-badge jb-generic">PNAS</span>
+            <span class="pub-date">Sep 2026</span>
+          </div>
+          <div class="pub-title">Deconstruction of lysergic acid diethylamide</div>
+          <div class="pub-authors">Basargin AG, Domokos A, et al., Tantillo DJ, Fiehn O, McCorvy JD, <strong>Olson DE</strong></div>
+          <div class="pub-summary">Systematically simplifies the ergoline core of LSD into nine analogues, defining the minimal pharmacophore for 5-HT2A agonism and yielding compounds with reduced hallucinogenic and cardiotoxic liabilities.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1073/pnas.2603412123</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1073/pnas.2603412123" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42709856/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cell Biology &amp; Human Anatomy -->
+      <div class="dept-group dept-cellbio">
+        <div class="dept-label">Cell Biology &amp; Human Anatomy</div>
+
+        <div class="pub-card dept-cellbio">
+          <div class="card-top">
+            <span class="journal-badge jb-generic">Human Gene Therapy</span>
+            <span class="pub-date">Jul 2026</span>
+          </div>
+          <div class="pub-title">Monitoring fetal somatic cell genome editing in vivo with total-body positron emission tomography: studies in rhesus macaques</div>
+          <div class="pub-authors"><strong>Tarantal AF</strong>, Martinez ML, Sanz L, <strong>Lee CI</strong>, Yang H, O&#39;Geen H, <strong>Hartigan-O&#39;Connor DJ</strong>, <strong>Segal DJ</strong></div>
+          <div class="pub-summary">Uses total-body PET to noninvasively identify cells edited in utero in fetal rhesus macaques, a monitoring approach intended to support clinical translation of somatic cell genome editing.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1177/10430342261438941</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1177/10430342261438941" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/41981831/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Medical Microbiology &amp; Immunology -->
+      <div class="dept-group dept-mmi">
+        <div class="dept-label">Medical Microbiology &amp; Immunology</div>
+
+        <div class="pub-card dept-mmi">
+          <div class="card-top">
+            <span class="journal-badge jb-generic">Nature Microbiology</span>
+            <span class="pub-date">Aug 2026</span>
+          </div>
+          <div class="pub-title">Microbiota-derived 10-hydroxystearic acid activates PPAR&alpha; to restore gut epithelial barrier integrity and enhance anti-retroviral therapy</div>
+          <div class="pub-authors">Kramer D, Santos Rocha C, Gaulke CA, Nearing M, <strong>Sankaran-Walters S</strong>, Loque I, Kidigannappa A, Pham E, Hu S, Wanakumjorn P, Abbattista R, Dandekar A, Faller R, <strong>Dandekar S</strong></div>
+          <div class="pub-summary">Identifies 10-hydroxystearic acid, a <em>Lactiplantibacillus plantarum</em> metabolite, as a PPAR&alpha; ligand that repairs the HIV-damaged gut barrier and enhances antiretroviral therapy in a nonhuman primate model.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1038/s41564-026-02433-0</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1038/s41564-026-02433-0" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42533069/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card dept-mmi">
+          <div class="card-top">
+            <span class="journal-badge jb-generic">Annals of Internal Medicine</span>
+            <span class="pub-date">Sep 2026</span>
+          </div>
+          <div class="pub-title">Olorofim in treatment of patients with poorly controlled disseminated coccidioidomycosis: a single-group, open-label, phase 2b, multicenter study</div>
+          <div class="pub-authors">Donovan FM, Johnson RH, Patterson TF, et al., <strong>Thompson GR</strong></div>
+          <div class="pub-summary">Phase 2b study at ten U.S. sites evaluating the first-in-class antifungal olorofim in 41 patients with disseminated Valley fever who had limited or no treatment options.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.7326/ANNALS-26-00103</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.7326/ANNALS-26-00103" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42475691/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card dept-mmi">
+          <div class="card-top">
+            <span class="journal-badge jb-generic">eLife</span>
+            <span class="pub-date">Jul 2026</span>
+          </div>
+          <div class="pub-title">Reactive oxygen detoxification contributes to <em>Mycobacterium abscessus</em> antibiotic survival</div>
+          <div class="pub-authors">Bates NA, Rodriguez R, Drwich R, Ray A, Stanley SA, <strong>Penn BH</strong></div>
+          <div class="pub-summary">Transposon sequencing screens show that detoxifying reactive oxygen species helps <em>M. abscessus</em> tolerate bactericidal antibiotics, pointing to a pathway behind treatment failure in these hard-to-treat infections.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.7554/eLife.104944</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.7554/eLife.104944" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42478694/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card dept-mmi">
+          <div class="card-top">
+            <span class="journal-badge jb-generic">PNAS</span>
+            <span class="pub-date">Sep 2026</span>
+          </div>
+          <div class="pub-title"><em>Salmonella</em> lipopolysaccharide stimulates uptake of long-chain fatty acids in the small intestine</div>
+          <div class="pub-authors">Koo E, Quinn G, Behrendt CL, et al., <strong>Winter SE</strong>, Hooper LV</div>
+          <div class="pub-summary">Shows that <em>Salmonella</em> lipopolysaccharide triggers CD36-dependent fatty acid uptake by small-intestinal epithelial cells, revealing how an enteric pathogen remodels host lipid metabolism.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1073/pnas.2618255123</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1073/pnas.2618255123" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42685086/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pharmacology -->
+      <div class="dept-group dept-pharma">
+        <div class="dept-label">Pharmacology</div>
+
+        <div class="pub-card dept-pharma">
+          <div class="card-top">
+            <span class="journal-badge jb-generic">Science</span>
+            <span class="pub-date">Sep 2026</span>
+          </div>
+          <div class="pub-title">Targeting an atypical G protein-coupled receptor signaling pathway for cardiac fibrosis therapy</div>
+          <div class="pub-authors">Zhang H, Shivnaraine RV, Ren L, Thai PN, et al., <strong>Chiamvimonvat N</strong>, Garcia-Marcos M, Kobilka BK, Wu JC</div>
+          <div class="pub-summary">An iPSC-based drug discovery pipeline identifies CGS15943 as an antifibrotic lead acting through an atypical adenosine receptor and G&beta;&gamma; pathway, a potential first therapy aimed directly at cardiac fibrosis.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1126/science.aej5896</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1126/science.aej5896" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42784676/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card dept-pharma">
+          <div class="card-top">
+            <span class="journal-badge jb-generic">Communications Biology</span>
+            <span class="pub-date">Jul 2026</span>
+          </div>
+          <div class="pub-title">Macropinocytosis mediates neurotropism of <em>Cryptococcus neoformans</em> in a human organoid model of the blood-brain barrier</div>
+          <div class="pub-authors">Bennett AB, Lanser DM, Vu K, Sahoo AR, Buck M, <strong>Gelli A</strong></div>
+          <div class="pub-summary">Using a human blood-brain barrier organoid for the first time in this context, shows that the fungus enters brain endothelium by macropinocytosis, a route the authors suggest could also be exploited to deliver therapeutics across the barrier. Led by graduate trainee Amelia Bennett (Ph.D., April 2026) with postdoc Dylan Lanser.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1038/s42003-026-10597-y</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1038/s42003-026-10597-y" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42414515/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card dept-pharma">
+          <div class="card-top">
+            <span class="journal-badge jb-generic">Circulation Research</span>
+            <span class="pub-date">Jul 2026</span>
+          </div>
+          <div class="pub-title">Targeting arrhythmogenic late sodium current by FHF1A-derivative FixR in heart failure cardiomyocytes</div>
+          <div class="pub-authors">Hegyi B, Angsutararux P, et al., <strong>Ripplinger CM</strong>, <strong>Martin JL</strong>, Ginsburg KS, Bedi KC, Margulies KB, Ben-Johny M, <strong>Bers DM</strong></div>
+          <div class="pub-summary">Tests FixR, an engineered peptide derived from fibroblast growth factor homologous factor 1A, as a way to suppress the proarrhythmic late sodium current in human and animal models of heart failure.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1161/CIRCRESAHA.126.328204</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1161/CIRCRESAHA.126.328204" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42186805/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card dept-pharma">
+          <div class="card-top">
+            <span class="journal-badge jb-generic">Hypertension</span>
+            <span class="pub-date">Sep 2026</span>
+          </div>
+          <div class="pub-title">Blood pressure tunes the functional coupling of cerebrovascular Ca<sub>V</sub>1.2 channels</div>
+          <div class="pub-authors">Mironova GY, Mart&iacute;n-Arag&oacute;n Baudel M, et al., <strong>Navedo MF</strong>, Welsh DG</div>
+          <div class="pub-summary">Shows that intravascular pressure enhances CaV1.2 channel coupling and trafficking in cerebral arteries, adding a mechanism to the myogenic control of brain blood flow.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1161/HYPERTENSIONAHA.126.27574</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1161/HYPERTENSIONAHA.126.27574" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42808165/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card dept-pharma">
+          <div class="card-top">
+            <span class="journal-badge jb-generic">Journal of Physiology</span>
+            <span class="pub-date">Aug 2026</span>
+          </div>
+          <div class="pub-title">Ca<sub>V</sub>1.2 dynamics in native male arterial myocytes</div>
+          <div class="pub-authors">Baudel MM, Voorhees H, Syed AU, Ferrara MK, <strong>Horne M</strong>, <strong>Hell JW</strong>, <strong>Santana LF</strong>, <strong>Dixon RE</strong>, <strong>Nieves-Cintron M</strong>, <strong>Navedo MF</strong></div>
+          <div class="pub-summary">Shows that microtubule-mediated transport actively shapes how CaV1.2 channels cluster at the arterial myocyte membrane, a cross-departmental study linking channel trafficking to vascular dysfunction in hyperglycemia and hypertension.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1113/JP291474</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1113/JP291474" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42384395/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Physiology &amp; Membrane Biology -->
+      <div class="dept-group dept-physio">
+        <div class="dept-label">Physiology &amp; Membrane Biology</div>
+
+        <div class="pub-card dept-physio review">
+          <div class="card-top">
+            <span class="journal-badge jb-review">Circulation Research &middot; Editorial</span>
+            <span class="pub-date">Aug 2026</span>
+          </div>
+          <div class="pub-title">Order from noise: what the pacemaker pays for stochastic resonance (Editorial)</div>
+          <div class="pub-authors"><strong>Santana LF</strong>, <strong>Clancy CE</strong></div>
+          <div class="pub-summary">Invited editorial examining the role, and the cost, of stochastic resonance in cardiac pacemaking.</div>
+          <div class="flag">&#9888; Editorial: not primary research</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1161/CIRCRESAHA.126.329305</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1161/CIRCRESAHA.126.329305" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42594170/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card dept-physio">
+          <div class="card-top">
+            <span class="journal-badge jb-generic">Cardiovascular Research</span>
+            <span class="pub-date">Aug 2026</span>
+          </div>
+          <div class="pub-title">Reduced Cx43 S-nitrosylation protects against cardiac stress-induced arrhythmias and myocardial injury in Duchenne muscular dystrophy</div>
+          <div class="pub-authors">Mu&ntilde;oz MF, Gaete PS, Quan JJ, Nguyen TT, Nuno J, Sheehy A, Araujo PA, Burboa PC, Lillo MA, <strong>Contreras JE</strong></div>
+          <div class="pub-summary">Knock-in mice show that preventing S-nitrosylation of connexin-43 at cysteine 271 protects dystrophic hearts from stress-induced arrhythmias and injury, identifying a targetable mechanism in Duchenne cardiomyopathy.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1093/cvr/cvag170</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1093/cvr/cvag170" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42573153/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card dept-physio">
+          <div class="card-top">
+            <span class="journal-badge jb-generic">eLife</span>
+            <span class="pub-date">Jul 2026</span>
+          </div>
+          <div class="pub-title">Large-scale synthetic data enable digital twins of human excitable cells</div>
+          <div class="pub-authors">Yang PC, Jeng MT, Lieu DK, Smithers RL, Hernandez-Hernandez G, <strong>Santana LF</strong>, <strong>Clancy CE</strong></div>
+          <div class="pub-summary">Builds digital twins of individual human iPSC-derived cardiomyocytes from a single optimized voltage-clamp experiment, using massive synthetic datasets to capture cell-to-cell variability that averaging normally obscures.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.7554/eLife.110013</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.7554/eLife.110013" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42489674/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card dept-physio">
+          <div class="card-top">
+            <span class="journal-badge jb-generic">Nucleic Acids Research</span>
+            <span class="pub-date">Jul 2026</span>
+          </div>
+          <div class="pub-title">CATVariant: a web server for integrated protein variant interpretation across sequence, structure, population, and clinical evidence</div>
+          <div class="pub-authors">Ngo K, Amini H, <strong>Vorobyov I</strong>, <strong>Clancy CE</strong></div>
+          <div class="pub-summary">An open-access web server that harmonizes sequence, structural, population, clinical, experimental, and literature evidence at the residue level to interpret protein variants; first-authored by postdoc Khoa Ngo.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1093/nar/gkag518</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1093/nar/gkag518" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42186440/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card dept-physio">
+          <div class="card-top">
+            <span class="journal-badge jb-generic">Journal of General Physiology</span>
+            <span class="pub-date">Aug 2026 (online)</span>
+          </div>
+          <div class="pub-title">A hERG blocker facilitates K<sup>+</sup> channel current by promoting pore opening while blocking</div>
+          <div class="pub-authors">Docken SS, Marquis MJ, Ngo K, Wada Y, Kita S, <strong>Yarov-Yarovoy V</strong>, <strong>Clancy CE</strong>, <strong>Vorobyov I</strong>, Lewis TJ, Furutani K, <strong>Sack JT</strong></div>
+          <div class="pub-summary">Proposes an agonism-while-blocking mechanism to explain why many clinically used hERG blockers also facilitate hERG current, a property that may offset their arrhythmia risk.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1085/jgp.202614015</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1085/jgp.202614015" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42658189/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card dept-physio review">
+          <div class="card-top">
+            <span class="journal-badge jb-review">Physiology &middot; Review</span>
+            <span class="pub-date">Sep 2026</span>
+          </div>
+          <div class="pub-title">Cellular and molecular mechanisms of muscle spindle development and function (Review)</div>
+          <div class="pub-authors">Espino CM, <strong>Griffith TN</strong></div>
+          <div class="pub-summary">Invited review on how proprioceptors in muscle spindles develop and encode body position and movement, the focus of the lab&rsquo;s new NSF CAREER Award.</div>
+          <div class="flag">&#9888; Review: not primary research</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1152/physiol.00017.2026</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1152/physiol.00017.2026" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42686222/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Public Health Sciences -->
+      <div class="dept-group dept-phs">
+        <div class="dept-label">Public Health Sciences</div>
+
+        <div class="pub-card dept-phs">
+          <div class="card-top">
+            <span class="journal-badge jb-generic">The Lancet Healthy Longevity</span>
+            <span class="pub-date">Aug 2026</span>
+          </div>
+          <div class="pub-title">Incidence of dementia after age 90 years and association with APOE genotype, race, and sex in the USA: the LifeAfter90 prospective cohort study</div>
+          <div class="pub-authors">Colbeth HL, Corrada MM, Mungas D, Gilsanz P, <strong>George KM</strong>, Gaied R, Kawas CH, DeCarli C, <strong>Whitmer RA</strong></div>
+          <div class="pub-summary">In a diverse cohort of adults over 90, women had about twice the dementia risk of men, racial and ethnic disparities seen at younger ages persisted, and APOE2 remained protective; led by PHS postdoc Hilary Colbeth.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1016/j.lanhl.2026.100882</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1016/j.lanhl.2026.100882" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42551464/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card dept-phs">
+          <div class="card-top">
+            <span class="journal-badge jb-generic">The Lancet Microbe</span>
+            <span class="pub-date">Aug 2026 (online)</span>
+          </div>
+          <div class="pub-title">Antibody dynamics after melioidosis infection in Thailand: a retrospective cohort study</div>
+          <div class="pub-authors">Saiprom N, Nimnuan-Ngam S, Phunpang R, Schildhauer SH, Morrison E, et al., <strong>Aiemjoy K</strong></div>
+          <div class="pub-summary">Characterizes how Hcp1- and O-polysaccharide-specific antibodies decay after melioidosis, improving the interpretation of serological tests for diagnosis and population surveillance.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1016/j.lanmic.2026.101450</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1016/j.lanmic.2026.101450" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42607693/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card dept-phs">
+          <div class="card-top">
+            <span class="journal-badge jb-generic">Journal of the National Cancer Institute</span>
+            <span class="pub-date">Sep 2026</span>
+          </div>
+          <div class="pub-title">Temporal treatment trends for ductal carcinoma in situ by race and ethnicity in the United States</div>
+          <div class="pub-authors">Florero M, Kerlikowske K, <strong>Fejerman L</strong>, Sauder C, Borowsky AD, <strong>Miglioretti DL</strong></div>
+          <div class="pub-summary">SEER analysis of 292,260 women with DCIS (2006 to 2021) showing declining use of breast-conserving surgery with radiation and rising bilateral mastectomy, with differences by race and ethnicity.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1093/jnci/djag338</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1093/jnci/djag338" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42776602/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pub-card dept-phs">
+          <div class="card-top">
+            <span class="journal-badge jb-generic">Cancer Research Communications</span>
+            <span class="pub-date">Sep 2026</span>
+          </div>
+          <div class="pub-title">Breast cancer protective genetic variant common in women of Indigenous American genetic ancestry is a cis-eQTL for RMND1, ARMT1, and CCDC170 in HER2-enriched tumor subtypes</div>
+          <div class="pub-authors">Zavala VA, Huang X, et al., Ziv E, Vidaurre T, <strong>Fejerman L</strong></div>
+          <div class="pub-summary">RNA-seq of 270 tumors from the Peruvian Genomics of Breast Cancer Study links a protective 6q25 variant, common in women of Indigenous American ancestry, to expression of nearby genes in HER2-enriched tumors.</div>
+          <div class="card-footer">
+            <span class="card-doi">10.1158/2767-9764.CRC-26-0293</span>
+            <div style="display:flex;gap:8px;">
+              <a class="btn-paper btn-doi" href="https://doi.org/10.1158/2767-9764.CRC-26-0293" target="_blank">&#128196; View Paper</a>
+              <a class="btn-paper btn-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/42777143/" target="_blank">PubMed</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /q3-body -->
+  </div><!-- /q3 -->
+
+</div><!-- /main -->
+
+<div class="footer">
+  Office of the Vice Dean for Basic Sciences &nbsp;&middot;&nbsp; UC Davis School of Medicine &nbsp;&middot;&nbsp; October 2026 &nbsp;&middot;&nbsp; Papers are listed if published online or in print during the quarter and not listed in an earlier quarter.
+</div>
+
+<script>
+  function togglePeriod(btn, bodyId) {
+    const body = document.getElementById(bodyId);
+    const isCollapsed = body.classList.toggle('collapsed');
+    btn.classList.toggle('collapsed', isCollapsed);
+  }
+</script>
+</body>
+</html>
