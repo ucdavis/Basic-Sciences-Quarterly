@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TEST FPMDEMO001 Discretionary Funds</title>
+<style>
+  :root{
+    /* Office-theme palette, matched to the grant portfolio dashboard */
+    --bg:#f0f4f8;
+    --surface:#ffffff;
+    --surface-alt:#eef3fb;
+    --totalrow:#dce6f1;
+    --border:#d7e1ee;
+    --ink:#1a2a40;
+    --ink-muted:#5a6e87;
+    --ink-faint:#8096ac;
+    --accent:#1f3864;
+    --accent-bright:#2e75b6;
+    --accent-soft:#dce6f1;
+    --negative:#c00000;
+    --negative-soft:#ffc7ce;
+    --caution:#ed7d31;
+    --caution-soft:#fff2cc;
+    --good:#70ad47;
+    --good-soft:#e2efda;
+    --shadow: 0 1px 2px rgba(26,40,64,.07), 0 4px 14px rgba(26,40,64,.06);
+    --side-bg:#1f3864;
+    --side-bg-alt:#243f73;
+    --side-border:#2e5090;
+    --side-text:#b8cde8;
+    --side-text-dim:#5878a8;
+    --side-active-bg:#2e5090;
+    --side-active-edge:#5eb8f5;
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ height:100%; }
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:"Source Sans 3","Segoe UI",system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+  h1,h2,h3{ font-family:"Libre Franklin","Segoe UI",system-ui,sans-serif; text-wrap:balance; margin:0; }
+  .num,.amt{ font-family:"IBM Plex Mono",ui-monospace,monospace; font-variant-numeric:tabular-nums; }
+
+  .app{ display:flex; min-height:100vh; }
+
+  #sidebar{ width:280px; min-width:280px; background:var(--side-bg); color:var(--side-text); display:flex; flex-direction:column;
+    position:sticky; top:0; height:100vh; overflow-y:auto; border-right:1px solid var(--side-border); }
+  #sidebar .brand{ padding:20px 18px 14px; border-bottom:1px solid var(--side-border); }
+  #sidebar .brand .brand-row1{ display:flex; align-items:baseline; gap:.5rem; flex-wrap:wrap; }
+  #sidebar .brand h1{ font-size:1.05rem; color:#fff; font-weight:700; margin-top:.35rem; }
+  #sidebar .brand p{ font-size:.76rem; color:var(--side-text-dim); margin-top:.25rem; }
+  #sidebar .brand p.faculty-name{ font-size:.93rem; color:#fff; margin-top:.35rem; }
+  #sidebar .brand p.ledger-date{ font-size:.68rem; color:var(--side-active-edge); margin-top:.5rem; font-weight:600; letter-spacing:.03em; }
+  #sidebar nav{ padding:10px 0; flex:1; }
+  .nav-sec{ font-size:.65rem; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:var(--side-text-dim); padding:14px 18px 6px; }
+  .nav-sec.clickable{ cursor:pointer; display:flex; align-items:center; justify-content:space-between; gap:.5rem; }
+  .nav-sec.clickable:hover{ color:var(--side-active-edge); }
+  .nav-sec.clickable .nav-sec-arrow{ font-size:.75rem; }
+  .nav-item{ display:flex; align-items:center; justify-content:space-between; gap:.6rem; padding:.55rem 18px; cursor:pointer;
+    border-left:3px solid transparent; font-size:.85rem; color:var(--side-text); }
+  .nav-item:hover{ background:var(--side-bg-alt); color:#fff; }
+  .nav-item.active{ background:var(--side-active-bg); color:#fff; border-left-color:var(--side-active-edge); font-weight:600; }
+  .nav-item .nav-main{ display:flex; align-items:baseline; gap:.5rem; min-width:0; }
+  .nav-item .nav-code{ font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:.7rem; color:var(--side-active-edge); flex-shrink:0; }
+  .nav-item.active .nav-code{ color:#bcdcff; }
+  .nav-item .nav-name{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .nav-item .nav-amt{ font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:.7rem; color:var(--side-text-dim); flex-shrink:0; }
+  .nav-item.empty{ opacity:.55; font-style:italic; }
+  .nav-item.empty .nav-amt{ visibility:hidden; }
+  .nav-item.flag .nav-amt{ color:#f0a48c; }
+  #sidebar footer{ padding:12px 18px; font-size:.68rem; color:var(--side-text-dim); border-top:1px solid var(--side-border); }
+
+  main{ flex:1; min-width:0; padding:2.25rem 2.5rem 5rem; }
+  .crumb{ font-size:.78rem; color:var(--ink-muted); margin-bottom:.6rem; }
+  .crumb .back{ color:var(--accent); cursor:pointer; font-weight:600; }
+  .crumb .back:hover{ text-decoration:underline; }
+  .view{ display:none; max-width:940px; }
+  .view.active{ display:block; }
+  .page-head h2{ font-size:1.35rem; font-weight:700; }
+  .page-head .sub{ color:var(--ink-muted); font-size:.9rem; margin-top:.3rem; }
+
+  .preview-note{ margin-top:1.1rem; padding:.85rem 1.1rem; background:var(--caution-soft);
+    border:1px solid color-mix(in srgb, var(--caution) 35%, var(--border)); border-left:3px solid var(--caution);
+    border-radius:6px; font-size:.83rem; line-height:1.55; }
+  .preview-note b{ color:var(--caution); }
+  .preview-note + .preview-note{ margin-top:.6rem; }
+  .preview-note.flag{ background:var(--negative-soft); border-color:color-mix(in srgb, var(--negative) 35%, var(--border)); border-left-color:var(--negative); }
+  .preview-note.flag b{ color:var(--negative); }
+
+  .kpis{ display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--border); border:1px solid var(--border);
+    border-radius:10px; overflow:hidden; margin-top:1.5rem; box-shadow:var(--shadow); }
+  .kpi{ background:var(--surface); padding:1.1rem 1.25rem; }
+  .kpi .label{ font-size:.7rem; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; }
+  .kpi .value{ margin-top:.4rem; font-size:1.35rem; font-weight:600; }
+  .kpi .value.accent{ color:var(--accent); }
+  .kpi .value.flag{ color:var(--negative); }
+  .kpi .foot{ margin-top:.3rem; font-size:.74rem; color:var(--ink-muted); }
+
+  .section-head{ margin-top:2.25rem; margin-bottom:.85rem; }
+  .section-head h3{ font-size:1.02rem; font-weight:700; }
+  .section-head p{ margin:.2rem 0 0; color:var(--ink-muted); font-size:.83rem; max-width:62ch; }
+
+  table.summary{ width:100%; border-collapse:collapse; background:var(--surface); border:1px solid var(--border);
+    border-radius:10px; overflow:hidden; box-shadow:var(--shadow); }
+  table.summary th{ text-align:left; font-size:.68rem; letter-spacing:.05em; text-transform:uppercase; color:#fff;
+    font-weight:600; padding:.65rem .9rem; background:var(--accent); border-bottom:1px solid var(--accent); }
+  table.summary th.amt-col{ text-align:right; }
+  table.summary td{ padding:.6rem .9rem; font-size:.87rem; border-top:1px solid var(--border); }
+  table.summary td.amt{ text-align:right; }
+  table.summary tr.clickable{ cursor:pointer; }
+  table.summary tr.clickable:hover{ background:var(--accent-soft); }
+  table.summary tr.empty-row{ color:var(--ink-faint); font-style:italic; }
+  table.summary tr.deficit td.amt.balance{ color:var(--negative); font-weight:700; }
+  table.summary .code-pill{ font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:.72rem; font-weight:600;
+    color:var(--accent); background:var(--accent-soft); border-radius:5px; padding:.12rem .42rem; }
+  table.summary tr.total-row td{ border-top:1px solid var(--accent); background:var(--totalrow); font-weight:700; color:var(--accent); }
+  table.summary tr.subtotal-row td{ background:var(--surface-alt); font-weight:700; color:var(--ink); font-size:.82rem; }
+  table.summary tr.fund-group td{ background:var(--surface-alt); color:var(--ink-faint); font-size:.68rem; font-weight:700;
+    letter-spacing:.06em; text-transform:uppercase; padding:.4rem .9rem; border-top:1px solid var(--border); }
+  .go-arrow{ color:var(--ink-faint); font-size:.9rem; }
+
+  .acct-title-bar{
+    background:linear-gradient(135deg, var(--accent) 0%, var(--accent-bright) 100%);
+    border-radius:10px; padding:18px 22px; margin-bottom:0; color:#fff;
+    display:flex; justify-content:space-between; align-items:flex-start; gap:1.25rem; flex-wrap:wrap;
+  }
+  .acct-title-bar .code-pill{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:.74rem; font-weight:700;
+    color:#fff; background:rgba(255,255,255,.18); border-radius:5px; padding:.14rem .5rem; margin-right:.55rem;
+  }
+  .acct-title-bar h2{ display:inline; font-size:1.2rem; font-weight:700; color:#fff; }
+  .acct-meta{ display:flex; gap:22px; flex-wrap:wrap; margin-top:.7rem; }
+  .acct-meta span{ font-size:.76rem; color:#bcd4ef; }
+  .acct-meta strong{ color:#fff; font-weight:600; }
+
+  .kpi-row{ display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--border); border:1px solid var(--border);
+    border-radius:10px; overflow:hidden; margin-top:1.1rem; box-shadow:var(--shadow); }
+  .kpi-row .kpi{ padding:.85rem 1rem; }
+  .kpi-row .kpi .value{ font-size:1.1rem; }
+
+  .empty-account{ margin-top:1.25rem; padding:1rem 1.25rem; background:var(--surface); border:1px dashed var(--border);
+    border-radius:8px; font-size:.87rem; color:var(--ink-muted); font-style:italic; }
+
+  table.cat, table.detail{ width:100%; border-collapse:collapse; margin-top:1.1rem; background:var(--surface);
+    border:1px solid var(--border); border-radius:10px; overflow:hidden; box-shadow:var(--shadow); }
+  table.cat th, table.detail th{ text-align:left; font-size:.68rem; letter-spacing:.06em; text-transform:uppercase; color:#fff;
+    font-weight:600; padding:.6rem 1.1rem; background:var(--accent); border-bottom:1px solid var(--accent); }
+  table.cat th.amt-col, table.detail th.amt-col{ text-align:right; }
+  table.cat td, table.detail td{ padding:.5rem 1.1rem; font-size:.87rem; border-top:1px solid var(--border); }
+  table.cat td.amt, table.detail td.amt{ text-align:right; }
+  table.cat tr.total-row td, table.detail tr.total-row td{ border-top:1px solid var(--accent); background:var(--totalrow); font-weight:700; color:var(--accent); }
+  table.cat td.zero, table.detail td.zero{ color:var(--ink-faint); }
+
+  .proj-block{ margin-top:1.1rem; padding:1rem 1.1rem; background:var(--surface); border:1px solid var(--border);
+    border-radius:10px; box-shadow:var(--shadow); font-size:.86rem; }
+  .proj-block .proj-title{ font-weight:700; font-size:.9rem; margin-bottom:.35rem; }
+  .proj-block .proj-body{ color:var(--ink-muted); line-height:1.6; }
+  .proj-block .proj-figure{ color:var(--ink); font-weight:600; }
+
+  .neg{ color:var(--negative); }
+  .neg::before{ content:"("; } .neg::after{ content:")"; }
+
+  .view-footer{ margin-top:2.5rem; padding-top:1rem; border-top:1px solid var(--border); font-size:.76rem; color:var(--ink-faint); }
+
+  /* ---- monthly burn rate (inline SVG, no external chart library) ---- */
+  .burn-block{ margin-top:1.1rem; padding:1rem 1.1rem 1.2rem; background:var(--surface); border:1px solid var(--border);
+    border-radius:10px; box-shadow:var(--shadow); }
+  .burn-block .burn-note{ font-size:.82rem; color:var(--ink-muted); margin-top:.6rem; line-height:1.6; }
+  .burn-legend{ display:flex; gap:18px; flex-wrap:wrap; margin-top:.5rem; font-size:.74rem; color:var(--ink-muted); }
+  .burn-legend span{ display:inline-flex; align-items:center; gap:5px; }
+  .burn-legend i{ display:inline-block; width:11px; height:11px; border-radius:2px; }
+  .burn-unavailable{ margin-top:1.1rem; padding:1rem 1.1rem; background:var(--surface-alt); border:1px dashed var(--border);
+    border-radius:10px; font-size:.86rem; color:var(--ink-muted); font-style:italic; }
+
+  /* ---- account monitoring panel (overview) ---- */
+  .triage-board{ display:grid; grid-template-columns:1fr 1fr; gap:14px; align-items:start; margin-top:1.1rem; }
+  @media (max-width:900px){ .triage-board{ grid-template-columns:1fr; } }
+  .triage-col{ border-radius:10px; overflow:hidden; border:1px solid var(--border); }
+  .triage-col-action{ background:#f3f0ff; border-color:#ddd6fe; }
+  .triage-col-action .triage-col-hd{ background:rgba(85,69,224,.85); color:#fff; }
+  .triage-col-review{ background:#fff4ed; border-color:#ffdcc4; }
+  .triage-col-review .triage-col-hd{ background:rgba(240,127,18,.85); color:#fff; }
+  .triage-col-hd{ font-size:.68rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; padding:.6rem .75rem; }
+  .triage-cards{ padding:.6rem .6rem .2rem; display:flex; flex-direction:column; gap:.5rem; }
+  .triage-card{ background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:.6rem .7rem;
+    font-size:.8rem; line-height:1.45; box-shadow:0 1px 2px rgba(31,56,100,.06); }
+  .triage-card-cat{ font-weight:700; color:var(--accent); font-size:.76rem; margin-bottom:.2rem; }
+  .triage-card-msg{ color:var(--ink); }
+  .triage-empty{ font-size:.76rem; color:var(--ink-faint); padding:.75rem .5rem; text-align:center; line-height:1.4; }
+  .triage-all-clear{ background:var(--good-soft); border:1px solid var(--good); border-radius:9px; padding:.9rem 1rem;
+    font-size:.8rem; color:var(--good-ink); text-align:center; margin-top:1.1rem; }
+
+  /* ---- pie charts (inline SVG, no external chart library) ---- */
+  .pie-block{ margin-top:1.1rem; padding:1rem 1.1rem; background:var(--surface); border:1px solid var(--border);
+    border-radius:10px; box-shadow:var(--shadow); }
+  .pie-chart-wrap{ display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap; margin-top:.6rem; }
+  .pie-legend{ display:flex; flex-direction:column; gap:.4rem; min-width:220px; }
+  .pie-legend-row{ display:flex; align-items:center; gap:.5rem; font-size:.82rem; }
+  .pie-legend-row i{ display:inline-block; width:11px; height:11px; border-radius:2.5px; flex-shrink:0; }
+  .pie-legend-label{ color:var(--ink); flex:1; }
+  .pie-legend-val{ color:var(--ink-muted); font-variant-numeric:tabular-nums; white-space:nowrap; }
+
+  .pie-legend--sunburst{ min-width:260px; }
+
+  .pie-chart-wrap--sunburst{ flex-wrap:nowrap; align-items:flex-start; }
+  .pie-chart-wrap--sunburst .pie-legend--sunburst{ min-width:0; flex:1 1 260px; max-width:340px; }
+  .pie-chart-wrap--sunburst svg{ flex:0 0 auto; }
+  .pie-chart-wrap--expense{ flex-wrap:nowrap; align-items:flex-start; }
+  .pie-chart-wrap--expense svg{ flex:0 0 auto; }
+  .plt-table-col{ flex:0 1 50%; max-width:50%; min-width:0; }
+  @media (max-width:680px){
+    .pie-chart-wrap--sunburst, .pie-chart-wrap--expense{ flex-wrap:wrap; }
+    .pie-chart-wrap--sunburst .pie-legend--sunburst, .plt-table-col{ max-width:none; }
+  }
+  .pie-legend-fund-header{ display:flex; align-items:center; gap:.5rem; font-size:.86rem; font-weight:700;
+    color:var(--ink); margin-top:.6rem; }
+  .pie-legend-fund-header:first-child{ margin-top:0; }
+  .pie-legend-fund-header i{ display:inline-block; width:12px; height:12px; border-radius:2.5px; flex-shrink:0; }
+  .pie-legend-fund-pct{ font-weight:400; color:var(--ink-muted); }
+  .pie-legend-row--task{ padding-left:1.1rem; }
+
+  .pie-legend-badge{ display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px;
+    border-radius:50%; border:1.5px solid; font-size:9.5px; font-weight:700; flex-shrink:0; background:#fff; }
+
+  .plt-table{ width:100%; border-collapse:separate; border-spacing:0; font-size:.69rem;
+    border:1px solid var(--border); border-radius:8px; overflow:hidden; margin-top:0; }
+  .plt-table th{ background:#3d4c5c; color:#fff; font-weight:600; text-align:left; padding:.22rem .4rem; line-height:1.25; }
+  .plt-table th.plt-num{ text-align:right; }
+  .plt-table td{ padding:.18rem .4rem; border:1px solid var(--border); line-height:1.25; }
+  .plt-table td.plt-num{ text-align:right; white-space:nowrap; font-variant-numeric:tabular-nums; }
+  .plt-fund-row td{ font-weight:700; background:var(--surface-alt); }
+  .plt-fund-row .plt-fund-pct{ font-weight:400; color:var(--ink-muted); }
+  .plt-swatch{ display:inline-block; width:8px; height:8px; border-radius:2px; flex-shrink:0; margin-right:.35rem; vertical-align:0px; }
+  .plt-badge-num{ font-weight:700; }
+  .pie-caption{ margin-top:.75rem; font-size:.78rem; color:var(--ink-muted); }
+  .pie-unavailable{ margin-top:1.1rem; padding:.85rem 1.1rem; background:var(--surface-alt); border:1px dashed var(--border);
+    border-radius:10px; font-size:.84rem; color:var(--ink-muted); font-style:italic; }
+
+  @media (max-width:860px){
+    .app{ flex-direction:column; }
+    #sidebar{ width:100%; height:auto; position:relative; }
+    .kpis, .kpi-row{ grid-template-columns:repeat(2,1fr); }
+  }
+
+  .nav-item.flag .nav-amt{ color:#f0a48c; }
+  .preview-note + .preview-note{ margin-top:.6rem; }
+  .preview-note.flag{ background:var(--negative-soft); border-left-color:var(--negative); }
+  .preview-note.flag b{ color:var(--negative); }
+  .kpi .value.flag{ color:var(--negative); }
+  table.summary tr.deficit td.amt.balance{ color:var(--negative); font-weight:700; }
+  table.summary tr.offsummary td{ color:var(--ink-muted); font-style:italic; }
+  .test-banner{ margin:0 0 1rem; padding:.55rem .9rem; border-radius:8px; background:var(--caution-soft);
+    border:1px solid #f4d58d; font-size:.8rem; color:var(--caution-ink); }
+  .notes-list{ margin:.4rem 0 0; padding-left:1.1rem; }
+  .kpis.k5{ grid-template-columns:repeat(5,1fr); }
+  @media (max-width:900px){ .kpis.k5{ grid-template-columns:repeat(2,1fr); } }
+  table.cat tr.cat-group td{ background:var(--surface-alt); font-weight:700; color:var(--accent); }
+  table.cat td.indent{ padding-left:1.6rem; }
+  table.cat td.amt{ white-space:nowrap; }
+  /* ===== grant dashboard font and table template (decision 2026-10-12) ===== */
+  body, body *{ font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif !important; }
+  body{ font-size:14px; }
+  .amt, .num, .nav-amt, .nav-code, .code-pill, .kpi .value{ font-variant-numeric:tabular-nums; }
+  main table.summary, main table.cat, main table.people, main table.detail{
+    width:100%; table-layout:auto; border-collapse:separate; border-spacing:0.5px; background:#fff;
+    font-size:12.5px; border:none; border-radius:0; box-shadow:none; overflow:visible; margin-top:1rem; }
+  main table.summary th, main table.cat th, main table.people th, main table.detail th{
+    background:#1f3864; color:#fff; font-size:11px; font-weight:600; padding:7px 9px; text-align:left;
+    letter-spacing:.03em; text-transform:none; border:0.5px solid rgba(255,255,255,0.2); line-height:1.25; }
+  main table.summary td, main table.cat td, main table.people td, main table.detail td{
+    padding:7px 9px; font-size:12.5px; background:#e8eef6; color:#1a2a40;
+    border:0.5px solid rgba(255,255,255,0.2); vertical-align:middle; }
+  main table.summary th.amt-col, main table.cat th.amt-col, main table.people th.amt-col,
+  main table.summary td.amt, main table.cat td.amt, main table.people td.amt, main table.detail td.amt{
+    text-align:center; font-variant-numeric:tabular-nums; font-weight:400; }
+  main table.summary tr:hover td, main table.cat tr:hover td, main table.people tr:hover td{ background:#dde6f2; }
+  main table.summary tr.subtotal-row td, main table.cat tr.cat-group td, main table.people tr.subtotal-row td,
+  main table.summary tr.fund-group td{ background:#d8e2ee; font-weight:600; color:#1a2a40; font-size:12.5px;
+    text-transform:none; letter-spacing:0; }
+  main table.summary tr.total-row td, main table.cat tr.total-row td, main table.people tr.account-total-row td,
+  main table.detail tr.total-row td{ background:#c5d3e4; font-weight:700; color:#1a2a40; border-top:none; }
+  main table.summary tr.deficit td.amt.balance{ color:#c00000; font-weight:700; }
+  main table.summary tr.empty-row td{ color:#8096ac; font-style:italic; }
+  main table.cat td.indent{ padding-left:22px; }
+  /* overview and fund account lists: clearer grouping (decision 2026-10-12) */
+  main table.ov-table{ font-size:13px; }
+  main table.ov-table td{ padding:9px 10px; background:#ffffff; border-bottom:1px solid #e3eaf3; }
+  main table.ov-table tr.clickable:hover td{ background:#eef3ff; }
+  main table.ov-table tr.fund-group td{ background:#335592; color:#ffe699; font-weight:700; font-size:12.5px;
+    padding:8px 10px; letter-spacing:.02em; border-top:10px solid #f0f4f8; }
+  main table.ov-table tr.fund-group:first-child td{ border-top:none; }
+  main table.ov-table tr.fund-group.clickable:hover td{ background:#5a7fc2; }
+  main table.ov-table tr.fund-group td *{ color:inherit; }  /* fund header: fill #335592, hover #5a7fc2, text pale yellow #ffe699 (decision 2026-10-12) */
+  main table.ov-table tr.subtotal-row td{ background:#e8eef6; font-weight:700; color:#1f3864; }
+  main table.ov-table tr.total-row td{ background:#c5d3e4; font-weight:700; color:#1a2a40; font-size:13.5px;
+    border-top:2px solid #1f3864; }
+  main table.ov-table td:first-child{ text-align:left; }
+  main table.ov-table td.amt{ text-align:right; padding-right:16px; }
+  main table.ov-table th.amt-col, main table.ov-table th:not(:first-child){ text-align:right; padding-right:16px; }
+  /* all table headers: one size, all capitals, bold (decision 2026-10-12) */
+  main table th, main table th.amt-col{ font-size:11px !important; font-weight:700 !important;
+    text-transform:uppercase !important; letter-spacing:.04em !important; }
+
+  /* people table (posted cost detail); not in the standard dashboard stylesheet */
+  table.people{ width:100%; border-collapse:collapse; margin-top:1.25rem; background:var(--surface);
+    border:1px solid var(--border); border-radius:10px; overflow:hidden; box-shadow:var(--shadow); }
+  table.people th{ text-align:left; font-size:.68rem; letter-spacing:.06em; text-transform:uppercase; color:#fff;
+    font-weight:600; padding:.6rem 1.1rem; background:var(--accent); border-bottom:1px solid var(--accent); }
+  table.people th.amt-col{ text-align:right; }
+  table.people td{ padding:.5rem 1.1rem; font-size:.87rem; border-top:1px solid var(--border); vertical-align:top; }
+  table.people td.amt{ text-align:right; font-weight:600; }
+  table.people tbody tr:hover td{ background:var(--accent-soft); }
+  table.people td.name-cell{ font-weight:700; vertical-align:middle; white-space:nowrap; }
+  table.people td.name-cell.nonperson{ color:var(--ink-muted); font-weight:600; font-style:italic; }
+  .pi-chip{ font-size:.62rem; letter-spacing:.04em; font-weight:700; color:var(--accent); background:var(--accent-soft);
+    border-radius:4px; padding:.1rem .38rem; margin-left:.4rem; }
+  table.people tr.subtotal-row td{ background:var(--surface-alt); font-weight:700; color:var(--ink); }
+  table.people tr.account-total-row td{ border-top:1px solid var(--accent); background:var(--totalrow);
+    font-weight:700; font-size:.88rem; padding-top:.6rem; padding-bottom:.6rem; color:var(--accent); }
+  .notes-list li{ margin:.25rem 0; }
+</style>
+
+</head>
+<body>
+<div class="app">
+<aside id="sidebar"><div class="brand"><div class="brand-row1"><h1>FPMDEMO001</h1><p class="faculty-name">Davis, Ulysses Caesar</p></div><p class="ledger-date">Sep 2026 ledger &middot; TEST</p></div><nav id="nav"><div class="nav-item active" data-view="overview" onclick="showView('overview', this)"><span class="nav-main"><span class="nav-name">Overview</span></span></div>
+<div class="nav-sec clickable" onclick="showView('FUND-13U00', null)">Fund 13U00 <span class="nav-sec-arrow">&rsaquo;</span></div>
+<div class="nav-item flag" data-view="DF0001" onclick="showView('DF0001', this)"><span class="nav-main"><span class="nav-code">DF0001</span><span class="nav-name">Yearly Dept Support</span></span><span class="nav-amt">&minus;$1,140</span></div>
+<div class="nav-sec clickable" onclick="showView('FUND-15023', null)">Fund 15023 <span class="nav-sec-arrow">&rsaquo;</span></div>
+<div class="nav-item" data-view="SU0001" onclick="showView('SU0001', this)"><span class="nav-main"><span class="nav-code">SU0001</span><span class="nav-name">Start Up</span></span><span class="nav-amt">$217,950</span></div>
+<div class="nav-sec clickable" onclick="showView('FUND-15021', null)">Fund 15021 <span class="nav-sec-arrow">&rsaquo;</span></div>
+<div class="nav-item" data-view="DI0001" onclick="showView('DI0001', this)"><span class="nav-main"><span class="nav-code">DI0001</span><span class="nav-name">Over Recovery</span></span><span class="nav-amt">$3,750</span></div>
+<div class="nav-sec clickable" onclick="showView('FUND-71440', null)">Fund 71440 <span class="nav-sec-arrow">&rsaquo;</span></div>
+<div class="nav-item" data-view="GF0001" onclick="showView('GF0001', this)"><span class="nav-main"><span class="nav-code">GF0001</span><span class="nav-name">Aggie Friends Gift (fictitious)</span></span><span class="nav-amt">$10,200</span></div>
+<div class="nav-sec">No Detail Tab</div>
+<div class="nav-item empty" data-view="CFPRKC" onclick="showView('CFPRKC', this)"><span class="nav-main"><span class="nav-code">CFPRKC</span><span class="nav-name">Systemwide Proposal Review</span></span><span class="nav-amt">$0</span></div>
+</nav><footer>Amounts: total available balance, FY 2026&ndash;27 &middot; report run Oct 3, 2026</footer></aside>
+<main>
+<div style="margin:0 0 14px;border-radius:6px;background:#fff4ce;color:#5c4400;text-align:center;font:600 13px system-ui,sans-serif;padding:6px 8px;border:1px solid #e0c96b">SAMPLE DASHBOARD: all names, account numbers, funds and figures are fictitious.</div>
+<!-- ============ OVERVIEW ============ -->
+<section id="view-overview" class="view active">
+<div class="test-banner"><b>Test build.</b> Regenerated end to end from Davis_FPMDEMO001_v2_26_09.xlsx by build_html.py on Oct 12, 2026. Every figure is computed from the workbook; Account Monitoring cards are rule-based flags, not reviewed narrative.</div>
+<div class="page-head"><h2>Discretionary Funds Dashboard</h2><div class="sub">FPMDEMO001 &middot; Ulysses Caesar Davis, PI &middot; report run Oct 3, 2026</div></div>
+<div class="kpis k5"><div class="kpi"><div class="label">Actual budget</div><div class="value accent">$326,850</div><div class="foot">across 5 accounts; 1 in deficit</div></div><div class="kpi"><div class="label">YTD earnings</div><div class="value">$0</div><div class="foot">none recorded</div></div><div class="kpi"><div class="label">YTD expenses</div><div class="value">$78,570</div><div class="foot">FY 2026&ndash;27 to date</div></div><div class="kpi"><div class="label">Commitments</div><div class="value">$17,520</div><div class="foot">unpaid POs and projected charges</div></div><div class="kpi"><div class="label">Available balance</div><div class="value">$230,760</div><div class="foot">after commitments</div></div></div>
+<div class="section-head"><h3>All Accounts &mdash; FY 2026&ndash;27</h3><p>Available = actual budget + YTD earnings &minus; YTD expenses &minus; commitments. Click a row to open it.</p></div><table class="summary ov-table"><tr><th>Task</th><th>Actual budget</th><th>YTD earnings</th><th>YTD expenses</th><th>Commitments</th><th class="amt-col">Available balance</th></tr>
+<tr class="fund-group clickable" onclick="showView('FUND-13U00')"><td colspan="6">Fund 13U00 &rsaquo;</td></tr>
+<tr class="clickable deficit" onclick="showView('DF0001')"><td><span class="code-pill">DF0001</span> Yearly Dept Support</td><td class="amt">$25,000</td><td class="amt">$0</td><td class="amt">$26,140</td><td class="amt">$0</td><td class="amt balance">&minus;$1,140</td></tr>
+<tr class="subtotal-row"><td>Fund 13U00 subtotal</td><td class="amt">$25,000</td><td class="amt">$0</td><td class="amt">$26,140</td><td class="amt">$0</td><td class="amt">&minus;$1,140</td></tr>
+<tr class="fund-group clickable" onclick="showView('FUND-15023')"><td colspan="6">Fund 15023 &rsaquo;</td></tr>
+<tr class="clickable" onclick="showView('SU0001')"><td><span class="code-pill">SU0001</span> Start Up</td><td class="amt">$281,550</td><td class="amt">$0</td><td class="amt">$46,080</td><td class="amt">$17,520</td><td class="amt balance">$217,950</td></tr>
+<tr class="subtotal-row"><td>Fund 15023 subtotal</td><td class="amt">$281,550</td><td class="amt">$0</td><td class="amt">$46,080</td><td class="amt">$17,520</td><td class="amt">$217,950</td></tr>
+<tr class="fund-group clickable" onclick="showView('FUND-15021')"><td colspan="6">Fund 15021 &rsaquo;</td></tr>
+<tr class="clickable" onclick="showView('DI0001')"><td><span class="code-pill">DI0001</span> Over Recovery</td><td class="amt">$10,100</td><td class="amt">$0</td><td class="amt">$6,350</td><td class="amt">$0</td><td class="amt balance">$3,750</td></tr>
+<tr class="subtotal-row"><td>Fund 15021 subtotal</td><td class="amt">$10,100</td><td class="amt">$0</td><td class="amt">$6,350</td><td class="amt">$0</td><td class="amt">$3,750</td></tr>
+<tr class="fund-group clickable" onclick="showView('FUND-71440')"><td colspan="6">Fund 71440 &rsaquo;</td></tr>
+<tr class="clickable" onclick="showView('GF0001')"><td><span class="code-pill">GF0001</span> Aggie Friends Gift (fictitious)</td><td class="amt">$10,200</td><td class="amt">$0</td><td class="amt">$0</td><td class="amt">$0</td><td class="amt balance">$10,200</td></tr>
+<tr class="subtotal-row"><td>Fund 71440 subtotal</td><td class="amt">$10,200</td><td class="amt">$0</td><td class="amt">$0</td><td class="amt">$0</td><td class="amt">$10,200</td></tr>
+<tr class="fund-group"><td colspan="6">No Detail Tab</td></tr>
+<tr class="clickable empty-row" onclick="showView('CFPRKC')"><td><span class="code-pill">CFPRKC</span> Systemwide Proposal Review</td><td class="amt">$0</td><td class="amt">$0</td><td class="amt">$0</td><td class="amt">$0</td><td class="amt balance">$0</td></tr>
+<tr class="total-row"><td>Portfolio total</td><td class="amt">$326,850</td><td class="amt">$0</td><td class="amt">$78,570</td><td class="amt">$17,520</td><td class="amt">$230,760</td></tr></table>
+<div class="preview-note"><b>Tie-out to the Summary tab.</b> Available balance $230,760; Summary tab Available $230,760. They match. The Summary's Budget $685,500 and Actual $437,220 both include prior-year expenses of $358,650, which this dashboard shows as carryover.</div>
+<div class="preview-note"><b>Build checks.</b><ul class="notes-list"><li>Summary tab rows reconcile to the Summary header totals for Budget, Commitment, Actual and Available (to the cent).</li></ul></div>
+<div class="view-footer">FPMDEMO001 &middot; Davis_FPMDEMO001_v2_26_09.xlsx &middot; test build</div></section>
+<!-- ============ DF0001 ============ -->
+<section id="view-DF0001" class="view">
+<div class="crumb"><span class="back" onclick="showView('overview')">&larr; Overview</span></div>
+<div class="acct-title-bar"><div><span class="code-pill">DF0001</span><h2>Yearly Dept Support</h2><div class="acct-meta">
+<span><strong>Fund:</strong> 13U00</span>
+<span><strong>Task:</strong> DF0001</span><span><strong>PI:</strong> Ulysses Caesar Davis</span>
+<span><strong>Project Mgr:</strong> Sample Analyst</span>
+<span><strong>CoA String:</strong> 0000-13U00-0000000-00-000-FPMDEMO001-DF0001-000000-000000</span><span><strong>Budget Period:</strong> Jul 1, 2026 &ndash; Jun 30, 2027</span><span><strong>Report Run Date:</strong> Oct 3, 2026</span>
+</div></div></div>
+<div class="kpis k5"><div class="kpi"><div class="label">Actual budget</div><div class="value">$25,000</div><div class="foot">FY 2026&ndash;27 budget</div></div><div class="kpi"><div class="label">YTD earnings</div><div class="value">$0</div><div class="foot">none recorded</div></div><div class="kpi"><div class="label">YTD expenses</div><div class="value">$26,140</div><div class="foot">FY 2026&ndash;27 to date</div></div><div class="kpi"><div class="label">Commitments</div><div class="value">$0</div><div class="foot">unpaid POs and projected charges</div></div><div class="kpi"><div class="label">Available balance</div><div class="value flag">&minus;$1,140</div><div class="foot">after commitments</div></div></div>
+<div class="section-head"><h3>Account Monitoring</h3></div>
+<div class="triage-board"><div class="triage-col triage-col-action"><div class="triage-col-hd">Action item</div><div class="triage-cards"><div class="triage-card"><div class="triage-card-cat">Over budget</div><div class="triage-card-msg">Actual $26,140 exceeds budget $25,000; available balance is &minus;$1,140.</div></div></div></div><div class="triage-col triage-col-review"><div class="triage-col-hd">Review</div><div class="triage-cards"><div class="triage-empty">No Review flags.</div></div></div></div>
+<div class="section-head"><h3>Cost by expense type</h3><p>Basis: FY 2026&ndash;27 year to date (YTD Expenses).</p></div>
+<div class="pie-block"><div class="pie-chart-wrap"><svg viewBox="0 0 160 160" width="160" height="160" role="img" aria-label="DF0001 cost by expense type"><path d="M80.00,80.00 L80.00,14.00 A66,66 0 1 1 62.29,143.58 Z" fill="#c0504d" stroke="var(--surface)" stroke-width="2"><title>Personnel: $14,200 (54%)</title></path><path d="M80.00,80.00 L62.29,143.58 A66,66 0 0 1 48.22,22.15 Z" fill="#4bacc6" stroke="var(--surface)" stroke-width="2"><title>Supplies: $9,850 (38%)</title></path><path d="M80.00,80.00 L48.22,22.15 A66,66 0 0 1 80.00,14.00 Z" fill="#9bbb59" stroke="var(--surface)" stroke-width="2"><title>Travel: $2,090 (8%)</title></path></svg><div class="pie-legend"><div class="pie-legend-row"><i style="background:#c0504d"></i><span class="pie-legend-label">Personnel</span><span class="pie-legend-val">$14,200 &middot; 54%</span></div><div class="pie-legend-row"><i style="background:#4bacc6"></i><span class="pie-legend-label">Supplies</span><span class="pie-legend-val">$9,850 &middot; 38%</span></div><div class="pie-legend-row"><i style="background:#9bbb59"></i><span class="pie-legend-label">Travel</span><span class="pie-legend-val">$2,090 &middot; 8%</span></div></div></div></div>
+<div class="section-head"><h3>Budget category detail &mdash; FY 2026&ndash;27</h3><p>From the 13U00 tab, non-zero lines only. Actual budget = budget + carryover, where carryover takes off what was spent in prior years (prior-year expenses are used only for this). Available balance = actual budget + YTD earnings &minus; YTD expenses &minus; commitments.</p></div><table class="cat"><tr><th>Category</th><th class="amt-col">Budget</th><th class="amt-col">Carryover</th><th class="amt-col">Actual budget</th><th class="amt-col">YTD earnings</th><th class="amt-col">YTD expenses</th><th class="amt-col">Commitments</th><th class="amt-col">Available balance</th></tr>
+<tr><td>Personnel</td><td class="amt">$14,000</td><td class="amt">$0</td><td class="amt">$14,000</td><td class="amt">$0</td><td class="amt">$14,200</td><td class="amt">$0</td><td class="amt">&minus;$200</td></tr>
+<tr><td>Supplies</td><td class="amt">$9,000</td><td class="amt">$0</td><td class="amt">$9,000</td><td class="amt">$0</td><td class="amt">$9,850</td><td class="amt">$0</td><td class="amt">&minus;$850</td></tr>
+<tr><td>Travel</td><td class="amt">$2,000</td><td class="amt">$0</td><td class="amt">$2,000</td><td class="amt">$0</td><td class="amt">$2,090</td><td class="amt">$0</td><td class="amt">&minus;$90</td></tr>
+<tr class="total-row"><td>Total &mdash; DF0001</td><td class="amt">$25,000</td><td class="amt">$0</td><td class="amt">$25,000</td><td class="amt">$0</td><td class="amt">$26,140</td><td class="amt">$0</td><td class="amt">&minus;$1,140</td></tr></table>
+<div class="section-head"><h3>Current-year posted costs, FY 2026&ndash;27</h3><p>Actual expenses and commitments posted this fiscal year, by budget category; Personnel lists each person charged. From the 13U00 tab (actuals by month, commitments from projected charges); actuals checked against Cost Reports (Jul 2026 &ndash; Sep 2026).</p></div>
+<table class="cat"><tr><th>Category / line</th><th class="amt-col">YTD expenses</th><th class="amt-col">Commitments</th><th class="amt-col">Total</th></tr>
+<tr class="cat-group"><td colspan="4">Personnel</td></tr>
+<tr><td class="indent">Day, Picnic</td><td class="amt">$14,200</td><td class="amt">$0</td><td class="amt">$14,200</td></tr>
+<tr><td class="indent"><b>Subtotal &mdash; Personnel</b></td><td class="amt">$14,200</td><td class="amt">$0</td><td class="amt">$14,200</td></tr>
+<tr class="cat-group"><td colspan="4">Supplies</td></tr>
+<tr><td class="indent">Supplies</td><td class="amt">$9,850</td><td class="amt">$0</td><td class="amt">$9,850</td></tr>
+<tr><td class="indent"><b>Subtotal &mdash; Supplies</b></td><td class="amt">$9,850</td><td class="amt">$0</td><td class="amt">$9,850</td></tr>
+<tr class="cat-group"><td colspan="4">Travel</td></tr>
+<tr><td class="indent">Travel</td><td class="amt">$2,090</td><td class="amt">$0</td><td class="amt">$2,090</td></tr>
+<tr><td class="indent"><b>Subtotal &mdash; Travel</b></td><td class="amt">$2,090</td><td class="amt">$0</td><td class="amt">$2,090</td></tr>
+<tr class="total-row"><td>Total &mdash; DF0001</td><td class="amt">$26,140</td><td class="amt">$0</td><td class="amt">$26,140</td></tr></table>
+<div class="section-head"><h3>Pending Purchase Orders &mdash; Monthly Follow-Up</h3></div><div style="font-size:12px;color:#7a8fa5;margin-bottom:10px">All POs must be invoiced within <strong>90 days</strong> of opening. PO total on file: <strong>$0</strong></div><table class="detail"><tr><th>PO #</th><th>Vendor</th><th style="text-align:right">Amount</th><th style="text-align:center">Opened</th><th style="text-align:center">Status</th></tr><tr><td colspan="5" style="text-align:center;color:var(--ink-faint);font-style:italic">No itemized PO data in this workbook &mdash; total commitment amount only.</td></tr></table>
+</section>
+<!-- ============ SU0001 ============ -->
+<section id="view-SU0001" class="view">
+<div class="crumb"><span class="back" onclick="showView('overview')">&larr; Overview</span></div>
+<div class="acct-title-bar"><div><span class="code-pill">SU0001</span><h2>Start Up</h2><div class="acct-meta">
+<span><strong>Fund:</strong> 15023</span>
+<span><strong>Task:</strong> SU0001</span><span><strong>PI:</strong> Ulysses Caesar Davis</span>
+<span><strong>Project Mgr:</strong> Sample Analyst</span>
+<span><strong>CoA String:</strong> 0000-15023-0000000-00-000-FPMDEMO001-SU0001-000000-000000</span><span><strong>Budget Period:</strong> Jul 1, 2026 &ndash; Jun 30, 2027</span><span><strong>Report Run Date:</strong> Oct 3, 2026</span>
+</div></div></div>
+<div class="kpis k5"><div class="kpi"><div class="label">Actual budget</div><div class="value">$281,550</div><div class="foot">budget $600,000; carryover &minus;$318,450</div></div><div class="kpi"><div class="label">YTD earnings</div><div class="value">$0</div><div class="foot">none recorded</div></div><div class="kpi"><div class="label">YTD expenses</div><div class="value">$46,080</div><div class="foot">FY 2026&ndash;27 to date</div></div><div class="kpi"><div class="label">Commitments</div><div class="value">$17,520</div><div class="foot">unpaid POs and projected charges</div></div><div class="kpi"><div class="label">Available balance</div><div class="value">$217,950</div><div class="foot">after commitments</div></div></div>
+<div class="section-head"><h3>Account Monitoring</h3></div>
+<div class="triage-board"><div class="triage-col triage-col-action"><div class="triage-col-hd">Action item</div><div class="triage-cards"><div class="triage-empty">No Action Item flags.</div></div></div><div class="triage-col triage-col-review"><div class="triage-col-hd">Review</div><div class="triage-cards"><div class="triage-card"><div class="triage-card-cat">Open commitment</div><div class="triage-card-msg">$17,520 in unpaid POs. POs must be invoiced within 90 days of opening.</div></div></div></div></div>
+<div class="section-head"><h3>Cost by expense type</h3><p>Basis: FY 2026&ndash;27 year to date (YTD Expenses).</p></div>
+<div class="pie-block"><div class="pie-chart-wrap"><svg viewBox="0 0 160 160" width="160" height="160" role="img" aria-label="SU0001 cost by expense type"><path d="M80.00,80.00 L80.00,14.00 A66,66 0 1 1 20.81,109.19 Z" fill="#c0504d" stroke="var(--surface)" stroke-width="2"><title>Personnel: $31,200 (68%)</title></path><path d="M80.00,80.00 L20.81,109.19 A66,66 0 0 1 80.00,14.00 Z" fill="#4bacc6" stroke="var(--surface)" stroke-width="2"><title>Supplies: $14,880 (32%)</title></path></svg><div class="pie-legend"><div class="pie-legend-row"><i style="background:#c0504d"></i><span class="pie-legend-label">Personnel</span><span class="pie-legend-val">$31,200 &middot; 68%</span></div><div class="pie-legend-row"><i style="background:#4bacc6"></i><span class="pie-legend-label">Supplies</span><span class="pie-legend-val">$14,880 &middot; 32%</span></div></div></div></div>
+<div class="section-head"><h3>Budget category detail &mdash; FY 2026&ndash;27</h3><p>From the 15023 tab, non-zero lines only. Actual budget = budget + carryover, where carryover takes off what was spent in prior years (prior-year expenses are used only for this). Available balance = actual budget + YTD earnings &minus; YTD expenses &minus; commitments.</p></div><table class="cat"><tr><th>Category</th><th class="amt-col">Budget</th><th class="amt-col">Carryover</th><th class="amt-col">Actual budget</th><th class="amt-col">YTD earnings</th><th class="amt-col">YTD expenses</th><th class="amt-col">Commitments</th><th class="amt-col">Available balance</th></tr>
+<tr><td>Personnel</td><td class="amt">$300,000</td><td class="amt">&minus;$142,300</td><td class="amt">$157,700</td><td class="amt">$0</td><td class="amt">$31,200</td><td class="amt">$0</td><td class="amt">$126,500</td></tr>
+<tr><td>Supplies</td><td class="amt">$180,000</td><td class="amt">&minus;$98,650</td><td class="amt">$81,350</td><td class="amt">$0</td><td class="amt">$14,880</td><td class="amt">$0</td><td class="amt">$66,470</td></tr>
+<tr><td>Equipment</td><td class="amt">$120,000</td><td class="amt">&minus;$77,500</td><td class="amt">$42,500</td><td class="amt">$0</td><td class="amt">$0</td><td class="amt">$17,520</td><td class="amt">$24,980</td></tr>
+<tr class="total-row"><td>Total &mdash; SU0001</td><td class="amt">$600,000</td><td class="amt">&minus;$318,450</td><td class="amt">$281,550</td><td class="amt">$0</td><td class="amt">$46,080</td><td class="amt">$17,520</td><td class="amt">$217,950</td></tr></table>
+<div class="section-head"><h3>Current-year posted costs, FY 2026&ndash;27</h3><p>Actual expenses and commitments posted this fiscal year, by budget category; Personnel lists each person charged. From the 15023 tab (actuals by month, commitments from projected charges); actuals checked against Cost Reports (Jul 2026 &ndash; Sep 2026).</p></div>
+<table class="cat"><tr><th>Category / line</th><th class="amt-col">YTD expenses</th><th class="amt-col">Commitments</th><th class="amt-col">Total</th></tr>
+<tr class="cat-group"><td colspan="4">Personnel</td></tr>
+<tr><td class="indent">Aggie, Gunrock</td><td class="amt">$31,200</td><td class="amt">$0</td><td class="amt">$31,200</td></tr>
+<tr><td class="indent"><b>Subtotal &mdash; Personnel</b></td><td class="amt">$31,200</td><td class="amt">$0</td><td class="amt">$31,200</td></tr>
+<tr class="cat-group"><td colspan="4">Supplies</td></tr>
+<tr><td class="indent">Supplies</td><td class="amt">$14,880</td><td class="amt">$0</td><td class="amt">$14,880</td></tr>
+<tr><td class="indent"><b>Subtotal &mdash; Supplies</b></td><td class="amt">$14,880</td><td class="amt">$0</td><td class="amt">$14,880</td></tr>
+<tr class="cat-group"><td colspan="4">Equipment</td></tr>
+<tr><td class="indent">Equipment</td><td class="amt">$0</td><td class="amt">$17,520</td><td class="amt">$17,520</td></tr>
+<tr><td class="indent"><b>Subtotal &mdash; Equipment</b></td><td class="amt">$0</td><td class="amt">$17,520</td><td class="amt">$17,520</td></tr>
+<tr class="total-row"><td>Total &mdash; SU0001</td><td class="amt">$46,080</td><td class="amt">$17,520</td><td class="amt">$63,600</td></tr></table>
+<div class="section-head"><h3>Pending Purchase Orders &mdash; Monthly Follow-Up</h3></div><div style="font-size:12px;color:#7a8fa5;margin-bottom:10px">All POs must be invoiced within <strong>90 days</strong> of opening. PO total on file: <strong>$17,520</strong></div><table class="detail"><tr><th>PO #</th><th>Vendor</th><th style="text-align:right">Amount</th><th style="text-align:center">Opened</th><th style="text-align:center">Status</th></tr><tr><td colspan="5" style="text-align:center;color:var(--ink-faint);font-style:italic">No itemized PO data in this workbook &mdash; total commitment amount only.</td></tr></table>
+</section>
+<!-- ============ DI0001 ============ -->
+<section id="view-DI0001" class="view">
+<div class="crumb"><span class="back" onclick="showView('overview')">&larr; Overview</span></div>
+<div class="acct-title-bar"><div><span class="code-pill">DI0001</span><h2>Over Recovery</h2><div class="acct-meta">
+<span><strong>Fund:</strong> 15021</span>
+<span><strong>Task:</strong> DI0001</span><span><strong>PI:</strong> Ulysses Caesar Davis</span>
+<span><strong>Project Mgr:</strong> Sample Analyst</span>
+<span><strong>CoA String:</strong> 0000-15021-0000000-00-000-FPMDEMO001-DI0001-000000-000000</span><span><strong>Budget Period:</strong> Jul 1, 2026 &ndash; Jun 30, 2027</span><span><strong>Report Run Date:</strong> Oct 3, 2026</span>
+</div></div></div>
+<div class="kpis k5"><div class="kpi"><div class="label">Actual budget</div><div class="value">$10,100</div><div class="foot">budget $48,000; carryover &minus;$37,900</div></div><div class="kpi"><div class="label">YTD earnings</div><div class="value">$0</div><div class="foot">none recorded</div></div><div class="kpi"><div class="label">YTD expenses</div><div class="value">$6,350</div><div class="foot">FY 2026&ndash;27 to date</div></div><div class="kpi"><div class="label">Commitments</div><div class="value">$0</div><div class="foot">unpaid POs and projected charges</div></div><div class="kpi"><div class="label">Available balance</div><div class="value">$3,750</div><div class="foot">after commitments</div></div></div>
+<div class="section-head"><h3>Account Monitoring</h3></div>
+<div class="triage-board"><div class="triage-col triage-col-action"><div class="triage-col-hd">Action item</div><div class="triage-cards"><div class="triage-empty">No Action Item flags.</div></div></div><div class="triage-col triage-col-review"><div class="triage-col-hd">Review</div><div class="triage-cards"><div class="triage-card"><div class="triage-card-cat">Credits posted</div><div class="triage-card-msg">Negative monthly actuals: Aug &minus;$1,250. Usually cost transfers or corrections; confirm before citing monthly figures.</div></div></div></div></div>
+<div class="section-head"><h3>Cost by expense type</h3><p>Basis: FY 2026&ndash;27 year to date (YTD Expenses).</p></div>
+<div class="pie-block"><div class="pie-chart-wrap"><svg viewBox="0 0 160 160" width="160" height="160" role="img" aria-label="DI0001 cost by expense type"><path d="M80.00,80.00 L80.00,14.00 A66,66 0 1 1 80.00,146.00 A66,66 0 1 1 80.00,14.00 Z" fill="#4bacc6" stroke="none"><title>Supplies: $6,350 (100%)</title></path></svg><div class="pie-legend"><div class="pie-legend-row"><i style="background:#4bacc6"></i><span class="pie-legend-label">Supplies</span><span class="pie-legend-val">$6,350 &middot; 100%</span></div></div></div></div>
+<div class="section-head"><h3>Budget category detail &mdash; FY 2026&ndash;27</h3><p>From the 15021 tab, non-zero lines only. Actual budget = budget + carryover, where carryover takes off what was spent in prior years (prior-year expenses are used only for this). Available balance = actual budget + YTD earnings &minus; YTD expenses &minus; commitments.</p></div><table class="cat"><tr><th>Category</th><th class="amt-col">Budget</th><th class="amt-col">Carryover</th><th class="amt-col">Actual budget</th><th class="amt-col">YTD earnings</th><th class="amt-col">YTD expenses</th><th class="amt-col">Commitments</th><th class="amt-col">Available balance</th></tr>
+<tr><td>Supplies</td><td class="amt">$30,000</td><td class="amt">&minus;$22,400</td><td class="amt">$7,600</td><td class="amt">$0</td><td class="amt">$6,350</td><td class="amt">$0</td><td class="amt">$1,250</td></tr>
+<tr><td>Equipment</td><td class="amt">$18,000</td><td class="amt">&minus;$15,500</td><td class="amt">$2,500</td><td class="amt">$0</td><td class="amt">$0</td><td class="amt">$0</td><td class="amt">$2,500</td></tr>
+<tr class="total-row"><td>Total &mdash; DI0001</td><td class="amt">$48,000</td><td class="amt">&minus;$37,900</td><td class="amt">$10,100</td><td class="amt">$0</td><td class="amt">$6,350</td><td class="amt">$0</td><td class="amt">$3,750</td></tr></table>
+<div class="section-head"><h3>Current-year posted costs, FY 2026&ndash;27</h3><p>Actual expenses and commitments posted this fiscal year, by budget category; Personnel lists each person charged. From the 15021 tab (actuals by month, commitments from projected charges); actuals checked against Cost Reports (Jul 2026 &ndash; Sep 2026).</p></div>
+<table class="cat"><tr><th>Category / line</th><th class="amt-col">YTD expenses</th><th class="amt-col">Commitments</th><th class="amt-col">Total</th></tr>
+<tr class="cat-group"><td colspan="4">Supplies</td></tr>
+<tr><td class="indent">Supplies</td><td class="amt">$6,350</td><td class="amt">$0</td><td class="amt">$6,350</td></tr>
+<tr><td class="indent"><b>Subtotal &mdash; Supplies</b></td><td class="amt">$6,350</td><td class="amt">$0</td><td class="amt">$6,350</td></tr>
+<tr class="total-row"><td>Total &mdash; DI0001</td><td class="amt">$6,350</td><td class="amt">$0</td><td class="amt">$6,350</td></tr></table>
+<div class="section-head"><h3>Pending Purchase Orders &mdash; Monthly Follow-Up</h3></div><div style="font-size:12px;color:#7a8fa5;margin-bottom:10px">All POs must be invoiced within <strong>90 days</strong> of opening. PO total on file: <strong>$0</strong></div><table class="detail"><tr><th>PO #</th><th>Vendor</th><th style="text-align:right">Amount</th><th style="text-align:center">Opened</th><th style="text-align:center">Status</th></tr><tr><td colspan="5" style="text-align:center;color:var(--ink-faint);font-style:italic">No itemized PO data in this workbook &mdash; total commitment amount only.</td></tr></table>
+</section>
+<!-- ============ GF0001 ============ -->
+<section id="view-GF0001" class="view">
+<div class="crumb"><span class="back" onclick="showView('overview')">&larr; Overview</span></div>
+<div class="acct-title-bar"><div><span class="code-pill">GF0001</span><h2>Aggie Friends Gift (fictitious)</h2><div class="acct-meta">
+<span><strong>Fund:</strong> 71440</span>
+<span><strong>Task:</strong> GF0001</span><span><strong>PI:</strong> Ulysses Caesar Davis</span>
+<span><strong>Project Mgr:</strong> Sample Analyst</span>
+<span><strong>CoA String:</strong> 0000-71440-0000000-00-000-FPMDEMO001-GF0001-000000-000000</span><span><strong>Budget Period:</strong> Jul 1, 2026 &ndash; Jun 30, 2027</span><span><strong>Report Run Date:</strong> Oct 3, 2026</span>
+</div></div></div>
+<div class="kpis k5"><div class="kpi"><div class="label">Actual budget</div><div class="value">$10,200</div><div class="foot">budget $12,500; carryover &minus;$2,300</div></div><div class="kpi"><div class="label">YTD earnings</div><div class="value">$0</div><div class="foot">none recorded</div></div><div class="kpi"><div class="label">YTD expenses</div><div class="value">$0</div><div class="foot">FY 2026&ndash;27 to date</div></div><div class="kpi"><div class="label">Commitments</div><div class="value">$0</div><div class="foot">unpaid POs and projected charges</div></div><div class="kpi"><div class="label">Available balance</div><div class="value">$10,200</div><div class="foot">after commitments</div></div></div>
+<div class="section-head"><h3>Account Monitoring</h3></div>
+<div class="triage-all-clear">All clear &mdash; no open Action Item or Review flags.</div>
+<div class="section-head"><h3>Cost by expense type</h3><p>Basis: FY 2026&ndash;27 year to date (YTD Expenses).</p></div>
+<div class="pie-unavailable">No postings on this basis &mdash; there is no spend to chart.</div>
+<div class="section-head"><h3>Budget category detail &mdash; FY 2026&ndash;27</h3><p>From the 71440 tab, non-zero lines only. Actual budget = budget + carryover, where carryover takes off what was spent in prior years (prior-year expenses are used only for this). Available balance = actual budget + YTD earnings &minus; YTD expenses &minus; commitments.</p></div><table class="cat"><tr><th>Category</th><th class="amt-col">Budget</th><th class="amt-col">Carryover</th><th class="amt-col">Actual budget</th><th class="amt-col">YTD earnings</th><th class="amt-col">YTD expenses</th><th class="amt-col">Commitments</th><th class="amt-col">Available balance</th></tr>
+<tr><td>Travel</td><td class="amt">$8,000</td><td class="amt">&minus;$2,300</td><td class="amt">$5,700</td><td class="amt">$0</td><td class="amt">$0</td><td class="amt">$0</td><td class="amt">$5,700</td></tr>
+<tr><td>Supplies</td><td class="amt">$4,500</td><td class="amt">$0</td><td class="amt">$4,500</td><td class="amt">$0</td><td class="amt">$0</td><td class="amt">$0</td><td class="amt">$4,500</td></tr>
+<tr class="total-row"><td>Total &mdash; GF0001</td><td class="amt">$12,500</td><td class="amt">&minus;$2,300</td><td class="amt">$10,200</td><td class="amt">$0</td><td class="amt">$0</td><td class="amt">$0</td><td class="amt">$10,200</td></tr></table>
+<div class="section-head"><h3>Current-year posted costs, FY 2026&ndash;27</h3><p>Actual expenses and commitments posted this fiscal year, by budget category; Personnel lists each person charged. From the 71440 tab (actuals by month, commitments from projected charges); actuals checked against Cost Reports (Jul 2026 &ndash; Sep 2026).</p></div>
+<div class="empty-account">No expenses or commitments posted this fiscal year.</div>
+<div class="section-head"><h3>Pending Purchase Orders &mdash; Monthly Follow-Up</h3></div><div style="font-size:12px;color:#7a8fa5;margin-bottom:10px">All POs must be invoiced within <strong>90 days</strong> of opening. PO total on file: <strong>$0</strong></div><table class="detail"><tr><th>PO #</th><th>Vendor</th><th style="text-align:right">Amount</th><th style="text-align:center">Opened</th><th style="text-align:center">Status</th></tr><tr><td colspan="5" style="text-align:center;color:var(--ink-faint);font-style:italic">No itemized PO data in this workbook &mdash; total commitment amount only.</td></tr></table>
+</section>
+<!-- ============ CFPRKC ============ -->
+<section id="view-CFPRKC" class="view">
+<div class="crumb"><span class="back" onclick="showView('overview')">&larr; Overview</span></div>
+<div class="acct-title-bar"><div><span class="code-pill">CFPRKC</span><h2>Systemwide Proposal Review</h2><div class="acct-meta">
+<span><strong>Task:</strong> CFPRKC</span><span><strong>PI:</strong> Ulysses Caesar Davis</span>
+</div></div></div>
+<div class="kpis k5"><div class="kpi"><div class="label">Actual budget</div><div class="value">$0</div><div class="foot"> budget</div></div><div class="kpi"><div class="label">YTD earnings</div><div class="value">$0</div><div class="foot">none recorded</div></div><div class="kpi"><div class="label">YTD expenses</div><div class="value">$0</div><div class="foot"> to date</div></div><div class="kpi"><div class="label">Commitments</div><div class="value">$0</div><div class="foot">unpaid POs and projected charges</div></div><div class="kpi"><div class="label">Available balance</div><div class="value">$0</div><div class="foot">after commitments</div></div></div>
+<div class="preview-note">Summary link 'CFPRKC' does not match any tab in this workbook; Summary-tab figures only.</div>
+<div class="section-head"><h3>Account Monitoring</h3></div>
+<div class="triage-board"><div class="triage-col triage-col-action"><div class="triage-col-hd">Action item</div><div class="triage-cards"><div class="triage-empty">No Action Item flags.</div></div></div><div class="triage-col triage-col-review"><div class="triage-col-hd">Review</div><div class="triage-cards"><div class="triage-card"><div class="triage-card-cat">No current-period activity</div><div class="triage-card-msg">Budget, actual, commitments and balance are all $0. Confirm the account is still needed.</div></div></div></div></div>
+<div class="section-head"><h3>Cost by expense type</h3><p>Basis: n/a.</p></div>
+<div class="pie-unavailable">No postings on this basis &mdash; there is no spend to chart.</div>
+<div class="section-head"><h3>Pending Purchase Orders &mdash; Monthly Follow-Up</h3></div><div style="font-size:12px;color:#7a8fa5;margin-bottom:10px">All POs must be invoiced within <strong>90 days</strong> of opening. PO total on file: <strong>$0</strong></div><table class="detail"><tr><th>PO #</th><th>Vendor</th><th style="text-align:right">Amount</th><th style="text-align:center">Opened</th><th style="text-align:center">Status</th></tr><tr><td colspan="5" style="text-align:center;color:var(--ink-faint);font-style:italic">No itemized PO data in this workbook &mdash; total commitment amount only.</td></tr></table>
+</section>
+<!-- ============ FUND-13U00 ============ -->
+<section id="view-FUND-13U00" class="view">
+<div class="crumb"><span class="back" onclick="showView('overview')">&larr; Overview</span></div>
+<div class="page-head"><h2><span class="plt-swatch" style="background:#0E2F4D"></span>Fund 13U00</h2><div class="sub">Yearly Dept Support &middot; 1 task</div></div>
+<div class="kpis k5"><div class="kpi"><div class="label">Actual budget</div><div class="value">$25,000</div><div class="foot"></div></div><div class="kpi"><div class="label">YTD earnings</div><div class="value">$0</div><div class="foot">none recorded</div></div><div class="kpi"><div class="label">YTD expenses</div><div class="value">$26,140</div><div class="foot">FY 2026&ndash;27 to date</div></div><div class="kpi"><div class="label">Commitments</div><div class="value">$0</div><div class="foot">unpaid POs and projected charges</div></div><div class="kpi"><div class="label">Available balance</div><div class="value flag">&minus;$1,140</div><div class="foot">after commitments</div></div></div>
+<div class="section-head"><h3>Account Monitoring</h3></div>
+<div class="triage-board"><div class="triage-col triage-col-action"><div class="triage-col-hd">Action item</div><div class="triage-cards"><div class="triage-card"><div class="triage-card-cat">DF0001 &middot; Over budget</div><div class="triage-card-msg">Actual $26,140 exceeds budget $25,000; available balance is &minus;$1,140.</div></div></div></div><div class="triage-col triage-col-review"><div class="triage-col-hd">Review</div><div class="triage-cards"><div class="triage-empty">No Review flags.</div></div></div></div>
+<div class="section-head"><h3>Cost by expense type</h3><p>Basis: FY 2026&ndash;27 year to date.</p></div>
+<div class="pie-block"><div class="pie-chart-wrap"><svg viewBox="0 0 160 160" width="160" height="160" role="img" aria-label="Cost by expense type"><path d="M80.00,80.00 L80.00,14.00 A66,66 0 1 1 62.29,143.58 Z" fill="#c0504d" stroke="var(--surface)" stroke-width="2"><title>Personnel: $14,200 (54%)</title></path><path d="M80.00,80.00 L62.29,143.58 A66,66 0 0 1 48.22,22.15 Z" fill="#4bacc6" stroke="var(--surface)" stroke-width="2"><title>Supplies: $9,850 (38%)</title></path><path d="M80.00,80.00 L48.22,22.15 A66,66 0 0 1 80.00,14.00 Z" fill="#9bbb59" stroke="var(--surface)" stroke-width="2"><title>Travel: $2,090 (8%)</title></path></svg><div class="pie-legend"><div class="pie-legend-row"><i style="background:#c0504d"></i><span class="pie-legend-label">Personnel</span><span class="pie-legend-val">$14,200 &middot; 54%</span></div><div class="pie-legend-row"><i style="background:#4bacc6"></i><span class="pie-legend-label">Supplies</span><span class="pie-legend-val">$9,850 &middot; 38%</span></div><div class="pie-legend-row"><i style="background:#9bbb59"></i><span class="pie-legend-label">Travel</span><span class="pie-legend-val">$2,090 &middot; 8%</span></div></div></div></div>
+<div class="section-head"><h3>Accounts in Fund 13U00</h3></div><table class="summary ov-table"><tr><th>Task</th><th>Actual budget</th><th>YTD earnings</th><th>YTD expenses</th><th>Commitments</th><th class="amt-col">Available balance</th></tr><tr class="clickable deficit" onclick="showView('DF0001')"><td><span class="code-pill">DF0001</span> Yearly Dept Support</td><td class="amt">$25,000</td><td class="amt">$0</td><td class="amt">$26,140</td><td class="amt">$0</td><td class="amt balance">&minus;$1,140</td></tr><tr class="total-row"><td>Fund 13U00 total</td><td class="amt">$25,000</td><td class="amt">$0</td><td class="amt">$26,140</td><td class="amt">$0</td><td class="amt">&minus;$1,140</td></tr></table>
+<div class="section-head"><h3>Pending Purchase Orders &mdash; Monthly Follow-Up</h3></div><div style="font-size:12px;color:#7a8fa5;margin-bottom:10px">All POs must be invoiced within <strong>90 days</strong> of opening. PO total on file: <strong>$0</strong></div><table class="detail"><tr><th>PO #</th><th>Vendor</th><th style="text-align:right">Amount</th><th style="text-align:center">Opened</th><th style="text-align:center">Status</th></tr><tr><td colspan="5" style="text-align:center;color:var(--ink-faint);font-style:italic">No itemized PO data in this workbook &mdash; total commitment amount only.</td></tr></table>
+</section>
+<!-- ============ FUND-15023 ============ -->
+<section id="view-FUND-15023" class="view">
+<div class="crumb"><span class="back" onclick="showView('overview')">&larr; Overview</span></div>
+<div class="page-head"><h2><span class="plt-swatch" style="background:#657A8D"></span>Fund 15023</h2><div class="sub">Start Up &middot; 1 task</div></div>
+<div class="kpis k5"><div class="kpi"><div class="label">Actual budget</div><div class="value">$281,550</div><div class="foot"></div></div><div class="kpi"><div class="label">YTD earnings</div><div class="value">$0</div><div class="foot">none recorded</div></div><div class="kpi"><div class="label">YTD expenses</div><div class="value">$46,080</div><div class="foot">FY 2026&ndash;27 to date</div></div><div class="kpi"><div class="label">Commitments</div><div class="value">$17,520</div><div class="foot">unpaid POs and projected charges</div></div><div class="kpi"><div class="label">Available balance</div><div class="value">$217,950</div><div class="foot">after commitments</div></div></div>
+<div class="section-head"><h3>Account Monitoring</h3></div>
+<div class="triage-board"><div class="triage-col triage-col-action"><div class="triage-col-hd">Action item</div><div class="triage-cards"><div class="triage-empty">No Action Item flags.</div></div></div><div class="triage-col triage-col-review"><div class="triage-col-hd">Review</div><div class="triage-cards"><div class="triage-card"><div class="triage-card-cat">SU0001 &middot; Open commitment</div><div class="triage-card-msg">$17,520 in unpaid POs. POs must be invoiced within 90 days of opening.</div></div></div></div></div>
+<div class="section-head"><h3>Cost by expense type</h3><p>Basis: FY 2026&ndash;27 year to date.</p></div>
+<div class="pie-block"><div class="pie-chart-wrap"><svg viewBox="0 0 160 160" width="160" height="160" role="img" aria-label="Cost by expense type"><path d="M80.00,80.00 L80.00,14.00 A66,66 0 1 1 20.81,109.19 Z" fill="#c0504d" stroke="var(--surface)" stroke-width="2"><title>Personnel: $31,200 (68%)</title></path><path d="M80.00,80.00 L20.81,109.19 A66,66 0 0 1 80.00,14.00 Z" fill="#4bacc6" stroke="var(--surface)" stroke-width="2"><title>Supplies: $14,880 (32%)</title></path></svg><div class="pie-legend"><div class="pie-legend-row"><i style="background:#c0504d"></i><span class="pie-legend-label">Personnel</span><span class="pie-legend-val">$31,200 &middot; 68%</span></div><div class="pie-legend-row"><i style="background:#4bacc6"></i><span class="pie-legend-label">Supplies</span><span class="pie-legend-val">$14,880 &middot; 32%</span></div></div></div></div>
+<div class="section-head"><h3>Accounts in Fund 15023</h3></div><table class="summary ov-table"><tr><th>Task</th><th>Actual budget</th><th>YTD earnings</th><th>YTD expenses</th><th>Commitments</th><th class="amt-col">Available balance</th></tr><tr class="clickable" onclick="showView('SU0001')"><td><span class="code-pill">SU0001</span> Start Up</td><td class="amt">$281,550</td><td class="amt">$0</td><td class="amt">$46,080</td><td class="amt">$17,520</td><td class="amt balance">$217,950</td></tr><tr class="total-row"><td>Fund 15023 total</td><td class="amt">$281,550</td><td class="amt">$0</td><td class="amt">$46,080</td><td class="amt">$17,520</td><td class="amt">$217,950</td></tr></table>
+<div class="section-head"><h3>Pending Purchase Orders &mdash; Monthly Follow-Up</h3></div><div style="font-size:12px;color:#7a8fa5;margin-bottom:10px">All POs must be invoiced within <strong>90 days</strong> of opening. PO total on file: <strong>$17,520</strong></div><table class="detail"><tr><th>PO #</th><th>Vendor</th><th style="text-align:right">Amount</th><th style="text-align:center">Opened</th><th style="text-align:center">Status</th></tr><tr><td colspan="5" style="text-align:center;color:var(--ink-faint);font-style:italic">No itemized PO data in this workbook &mdash; total commitment amount only.</td></tr></table>
+</section>
+<!-- ============ FUND-15021 ============ -->
+<section id="view-FUND-15021" class="view">
+<div class="crumb"><span class="back" onclick="showView('overview')">&larr; Overview</span></div>
+<div class="page-head"><h2><span class="plt-swatch" style="background:#8293A2"></span>Fund 15021</h2><div class="sub">Over Recovery &middot; 1 task</div></div>
+<div class="kpis k5"><div class="kpi"><div class="label">Actual budget</div><div class="value">$10,100</div><div class="foot"></div></div><div class="kpi"><div class="label">YTD earnings</div><div class="value">$0</div><div class="foot">none recorded</div></div><div class="kpi"><div class="label">YTD expenses</div><div class="value">$6,350</div><div class="foot">FY 2026&ndash;27 to date</div></div><div class="kpi"><div class="label">Commitments</div><div class="value">$0</div><div class="foot">unpaid POs and projected charges</div></div><div class="kpi"><div class="label">Available balance</div><div class="value">$3,750</div><div class="foot">after commitments</div></div></div>
+<div class="section-head"><h3>Account Monitoring</h3></div>
+<div class="triage-board"><div class="triage-col triage-col-action"><div class="triage-col-hd">Action item</div><div class="triage-cards"><div class="triage-empty">No Action Item flags.</div></div></div><div class="triage-col triage-col-review"><div class="triage-col-hd">Review</div><div class="triage-cards"><div class="triage-card"><div class="triage-card-cat">DI0001 &middot; Credits posted</div><div class="triage-card-msg">Negative monthly actuals: Aug &minus;$1,250. Usually cost transfers or corrections; confirm before citing monthly figures.</div></div></div></div></div>
+<div class="section-head"><h3>Cost by expense type</h3><p>Basis: FY 2026&ndash;27 year to date.</p></div>
+<div class="pie-block"><div class="pie-chart-wrap"><svg viewBox="0 0 160 160" width="160" height="160" role="img" aria-label="Cost by expense type"><path d="M80.00,80.00 L80.00,14.00 A66,66 0 1 1 80.00,146.00 A66,66 0 1 1 80.00,14.00 Z" fill="#4bacc6" stroke="none"><title>Supplies: $6,350 (100%)</title></path></svg><div class="pie-legend"><div class="pie-legend-row"><i style="background:#4bacc6"></i><span class="pie-legend-label">Supplies</span><span class="pie-legend-val">$6,350 &middot; 100%</span></div></div></div></div>
+<div class="section-head"><h3>Accounts in Fund 15021</h3></div><table class="summary ov-table"><tr><th>Task</th><th>Actual budget</th><th>YTD earnings</th><th>YTD expenses</th><th>Commitments</th><th class="amt-col">Available balance</th></tr><tr class="clickable" onclick="showView('DI0001')"><td><span class="code-pill">DI0001</span> Over Recovery</td><td class="amt">$10,100</td><td class="amt">$0</td><td class="amt">$6,350</td><td class="amt">$0</td><td class="amt balance">$3,750</td></tr><tr class="total-row"><td>Fund 15021 total</td><td class="amt">$10,100</td><td class="amt">$0</td><td class="amt">$6,350</td><td class="amt">$0</td><td class="amt">$3,750</td></tr></table>
+<div class="section-head"><h3>Pending Purchase Orders &mdash; Monthly Follow-Up</h3></div><div style="font-size:12px;color:#7a8fa5;margin-bottom:10px">All POs must be invoiced within <strong>90 days</strong> of opening. PO total on file: <strong>$0</strong></div><table class="detail"><tr><th>PO #</th><th>Vendor</th><th style="text-align:right">Amount</th><th style="text-align:center">Opened</th><th style="text-align:center">Status</th></tr><tr><td colspan="5" style="text-align:center;color:var(--ink-faint);font-style:italic">No itemized PO data in this workbook &mdash; total commitment amount only.</td></tr></table>
+</section>
+<!-- ============ FUND-71440 ============ -->
+<section id="view-FUND-71440" class="view">
+<div class="crumb"><span class="back" onclick="showView('overview')">&larr; Overview</span></div>
+<div class="page-head"><h2><span class="plt-swatch" style="background:#004D40"></span>Fund 71440</h2><div class="sub">Gift &middot; 1 task</div></div>
+<div class="kpis k5"><div class="kpi"><div class="label">Actual budget</div><div class="value">$10,200</div><div class="foot"></div></div><div class="kpi"><div class="label">YTD earnings</div><div class="value">$0</div><div class="foot">none recorded</div></div><div class="kpi"><div class="label">YTD expenses</div><div class="value">$0</div><div class="foot">FY 2026&ndash;27 to date</div></div><div class="kpi"><div class="label">Commitments</div><div class="value">$0</div><div class="foot">unpaid POs and projected charges</div></div><div class="kpi"><div class="label">Available balance</div><div class="value">$10,200</div><div class="foot">after commitments</div></div></div>
+<div class="section-head"><h3>Account Monitoring</h3></div>
+<div class="triage-all-clear">All clear &mdash; no open Action Item or Review flags.</div>
+<div class="section-head"><h3>Cost by expense type</h3><p>Basis: FY 2026&ndash;27 year to date.</p></div>
+<div class="pie-unavailable">No positive spend to chart.</div>
+<div class="section-head"><h3>Accounts in Fund 71440</h3></div><table class="summary ov-table"><tr><th>Task</th><th>Actual budget</th><th>YTD earnings</th><th>YTD expenses</th><th>Commitments</th><th class="amt-col">Available balance</th></tr><tr class="clickable" onclick="showView('GF0001')"><td><span class="code-pill">GF0001</span> Aggie Friends Gift (fictitious)</td><td class="amt">$10,200</td><td class="amt">$0</td><td class="amt">$0</td><td class="amt">$0</td><td class="amt balance">$10,200</td></tr><tr class="total-row"><td>Fund 71440 total</td><td class="amt">$10,200</td><td class="amt">$0</td><td class="amt">$0</td><td class="amt">$0</td><td class="amt">$10,200</td></tr></table>
+<div class="section-head"><h3>Pending Purchase Orders &mdash; Monthly Follow-Up</h3></div><div style="font-size:12px;color:#7a8fa5;margin-bottom:10px">All POs must be invoiced within <strong>90 days</strong> of opening. PO total on file: <strong>$0</strong></div><table class="detail"><tr><th>PO #</th><th>Vendor</th><th style="text-align:right">Amount</th><th style="text-align:center">Opened</th><th style="text-align:center">Status</th></tr><tr><td colspan="5" style="text-align:center;color:var(--ink-faint);font-style:italic">No itemized PO data in this workbook &mdash; total commitment amount only.</td></tr></table>
+</section>
+</main>
+</div>
+<script>
+  function showView(id, navEl){
+    document.querySelectorAll(".view").forEach(function(v){ v.classList.remove("active"); });
+    var target = document.getElementById("view-" + id);
+    if(target){ target.classList.add("active"); }
+    document.querySelectorAll(".nav-item").forEach(function(n){ n.classList.remove("active"); });
+    if(navEl){ navEl.classList.add("active"); }
+    else{ var match = document.querySelector('.nav-item[data-view="' + id + '"]'); if(match){ match.classList.add("active"); } }
+    window.scrollTo(0,0);
+  }
+</script>
+</body>
+</html>
